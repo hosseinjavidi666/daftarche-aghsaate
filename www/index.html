@@ -1,2464 +1,3486 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#2563eb">
-<title>دفترچه اقساط</title>
-
-<style>
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-}
-
-body{
-    margin:0;
-    font-family:Tahoma,Arial,sans-serif;
-    background:#f3f6fb;
-    color:#172033;
-}
-
-button,input,select,textarea{
-    font-family:inherit;
-}
-
-button{
-    cursor:pointer;
-    border:0;
-}
-
-.app{
-    min-height:100vh;
-}
-
-.header{
-    background:#2563eb;
-    color:white;
-    padding:15px;
-    position:sticky;
-    top:0;
-    z-index:50;
-    box-shadow:0 2px 10px rgba(0,0,0,.15);
-}
-
-.header-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-}
-
-.header-title{
-    font-size:20px;
-    font-weight:bold;
-}
-
-.header-actions{
-    display:flex;
-    gap:6px;
-}
-
-.icon-btn{
-    width:38px;
-    height:38px;
-    border-radius:10px;
-    background:rgba(255,255,255,.16);
-    color:white;
-    font-size:18px;
-}
-
-.container{
-    max-width:1000px;
-    margin:auto;
-    padding:15px;
-}
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-bottom:15px;
-}
-
-.stat{
-    background:white;
-    border-radius:15px;
-    padding:15px 10px;
-    text-align:center;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
-}
-
-.stat-value{
-    font-size:22px;
-    font-weight:bold;
-    margin-bottom:5px;
-}
-
-.stat-label{
-    color:#687386;
-    font-size:12px;
-}
-
-.card{
-    background:white;
-    border-radius:16px;
-    padding:15px;
-    margin-bottom:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
-}
-
-.card-title{
-    font-weight:bold;
-    font-size:17px;
-    margin-bottom:12px;
-}
-
-.actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-}
-
-.btn{
-    padding:11px 15px;
-    border-radius:10px;
-    font-size:14px;
-    font-weight:bold;
-}
-
-.btn-primary{
-    background:#2563eb;
-    color:white;
-}
-
-.btn-success{
-    background:#16a34a;
-    color:white;
-}
-
-.btn-danger{
-    background:#dc2626;
-    color:white;
-}
-
-.btn-warning{
-    background:#f59e0b;
-    color:white;
-}
-
-.btn-gray{
-    background:#e8edf5;
-    color:#273449;
-}
-
-.btn-purple{
-    background:#7c3aed;
-    color:white;
-}
-
-.search{
-    width:100%;
-    border:1px solid #d9dfeb;
-    border-radius:11px;
-    padding:12px;
-    font-size:14px;
-    outline:none;
-    margin-bottom:12px;
-}
-
-.search:focus,
-.input:focus,
-.select:focus,
-.textarea:focus{
-    border-color:#2563eb;
-}
-
-.input,
-.select,
-.textarea{
-    width:100%;
-    border:1px solid #d9dfeb;
-    border-radius:10px;
-    padding:11px;
-    font-size:14px;
-    outline:none;
-    background:white;
-}
-
-.textarea{
-    min-height:90px;
-    resize:vertical;
-}
-
-.form-group{
-    margin-bottom:12px;
-}
-
-.form-label{
-    display:block;
-    font-size:13px;
-    font-weight:bold;
-    margin-bottom:6px;
-}
-
-.customer{
-    border:1px solid #e5e9f1;
-    border-radius:13px;
-    padding:13px;
-    margin-bottom:9px;
-    background:#fff;
-}
-
-.customer-main{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    align-items:center;
-}
-
-.customer-name{
-    font-weight:bold;
-    font-size:15px;
-}
-
-.customer-phone{
-    color:#718096;
-    font-size:12px;
-    margin-top:5px;
-}
-
-.balance{
-    font-weight:bold;
-    white-space:nowrap;
-}
-
-.balance.debt{
-    color:#dc2626;
-}
-
-.balance.clear{
-    color:#16a34a;
-}
-
-.neighborhood{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    border:1px solid #e5e9f1;
-    padding:13px;
-    border-radius:12px;
-    margin-bottom:8px;
-}
-
-.empty{
-    text-align:center;
-    color:#7a8495;
-    padding:30px 10px;
-}
-
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    z-index:100;
-    align-items:flex-end;
-    justify-content:center;
-}
-
-.modal.show{
-    display:flex;
-}
-
-.modal-box{
-    background:white;
-    width:100%;
-    max-width:650px;
-    max-height:92vh;
-    overflow:auto;
-    border-radius:22px 22px 0 0;
-    padding:18px;
-    animation:up .2s ease;
-}
-
-@keyframes up{
-    from{transform:translateY(100%)}
-    to{transform:translateY(0)}
-}
-
-.modal-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:18px;
-}
-
-.modal-title{
-    font-weight:bold;
-    font-size:18px;
-}
-
-.close{
-    width:35px;
-    height:35px;
-    border-radius:10px;
-    background:#edf1f7;
-    font-size:20px;
-}
-
-.modal-footer{
-    display:flex;
-    gap:8px;
-    margin-top:15px;
-}
-
-.modal-footer .btn{
-    flex:1;
-}
-
-.ledger-header{
-    background:#2563eb;
-    color:white;
-    border-radius:15px;
-    padding:15px;
-    margin-bottom:12px;
-}
-
-.ledger-name{
-    font-size:20px;
-    font-weight:bold;
-}
-
-.ledger-info{
-    font-size:12px;
-    opacity:.9;
-    margin-top:5px;
-}
-
-.ledger-balance{
-    margin-top:15px;
-    font-size:24px;
-    font-weight:bold;
-}
-
-.transaction{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    border-bottom:1px solid #edf0f5;
-    padding:12px 0;
-}
-
-.transaction:last-child{
-    border-bottom:0;
-}
-
-.transaction-title{
-    font-weight:bold;
-    font-size:14px;
-}
-
-.transaction-date{
-    color:#7b8492;
-    font-size:11px;
-    margin-top:4px;
-}
-
-.transaction-amount{
-    font-weight:bold;
-    white-space:nowrap;
-}
-
-.transaction-amount.plus{
-    color:#dc2626;
-}
-
-.transaction-amount.minus{
-    color:#16a34a;
-}
-
-.tabs{
-    display:flex;
-    gap:7px;
-    margin-bottom:12px;
-    overflow-x:auto;
-}
-
-.tab{
-    padding:9px 13px;
-    border-radius:10px;
-    background:#e8edf5;
-    white-space:nowrap;
-    font-size:13px;
-}
-
-.tab.active{
-    background:#2563eb;
-    color:white;
-}
-
-.contact-item{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:13px 5px;
-    border-bottom:1px solid #edf0f5;
-}
-
-.contact-name{
-    font-weight:bold;
-}
-
-.contact-number{
-    color:#687386;
-    font-size:12px;
-    margin-top:4px;
-}
-
-.lock-screen{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:1000;
-    background:#2563eb;
-    color:white;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-}
-
-.lock-screen.show{
-    display:flex;
-}
-
-.lock-box{
-    width:100%;
-    max-width:380px;
-    background:white;
-    color:#172033;
-    border-radius:22px;
-    padding:25px;
-    text-align:center;
-}
-
-.lock-logo{
-    font-size:50px;
-    margin-bottom:10px;
-}
-
-.lock-title{
-    font-size:23px;
-    font-weight:bold;
-    margin-bottom:6px;
-}
-
-.lock-subtitle{
-    color:#687386;
-    font-size:13px;
-    margin-bottom:20px;
-}
-
-.settings-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:13px 0;
-    border-bottom:1px solid #edf0f5;
-}
-
-.settings-row:last-child{
-    border-bottom:0;
-}
-
-.small{
-    font-size:12px;
-    color:#718096;
-}
-
-.footer{
-    text-align:center;
-    padding:25px 10px;
-    color:#9aa3b1;
-    font-size:11px;
-}
-
-@media(max-width:500px){
-    .stats{
-        gap:7px;
-    }
-
-    .stat{
-        padding:12px 5px;
-    }
-
-    .stat-value{
-        font-size:18px;
-    }
-
-    .header-title{
-        font-size:17px;
-    }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>آیهان قسط</title>
+
+    <!-- Google API Client Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <style>
+        :root {
+            --primary: #1e88e5;
+            --primary-dark: #1565c0;
+            --bg: #f4f6f8;
+            --card-bg: #ffffff;
+            --text: #212121;
+            --text-secondary: #757575;
+            --purchase-bg: #fff3e0;
+            --purchase-border: #ffb74d;
+            --payment-bg: #e8f5e9;
+            --payment-border: #81c784;
+            --return-bg: #ffebee;
+            --return-border: #e57373;
+            --base-font-size: 14px;
+        }
+
+        body.font-normal {
+            --base-font-size: 14px;
+        }
+
+        body.font-large {
+            --base-font-size: 16px;
+        }
+
+        body.font-xlarge {
+            --base-font-size: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            font-size: var(--base-font-size);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+            border-left: 1px solid #e0e0e0;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px 6px;
+        }
+
+        .container {
+            padding: 12px;
+        }
+
+        .dashboard-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            padding: 12px 8px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .summary-card .title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .summary-card .value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .btn:active {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: #2e7d32;
+        }
+
+        .btn-warning {
+            background-color: #f57c00;
+        }
+
+        .btn-danger {
+            background-color: #c62828;
+        }
+
+        .btn-outline {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .list-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-info {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+
+        .card-info h3 {
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+        }
+
+        .card-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .card-balance-area {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .balance-badge {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #d32f2f;
+            cursor: pointer;
+        }
+
+        .eye-btn-inline {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 2px 6px;
+        }
+
+        .search-bar-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .search-bar {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .account-header {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .account-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 4px;
+        }
+
+        .account-header p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .share-bar {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .total-balance-box {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .total-balance-box .title {
+            font-size: 0.85rem;
+            color: #c62828;
+        }
+
+        .total-balance-box .amount {
+            font-size: 1.35rem;
+            font-weight: bold;
+            color: #c62828;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .action-btn {
+            padding: 10px 4px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .tx-row {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-right: 5px solid #ccc;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .tx-row.purchase {
+            background-color: var(--purchase-bg);
+            border-right-color: var(--purchase-border);
+        }
+
+        .tx-row.payment {
+            background-color: var(--payment-bg);
+            border-right-color: var(--payment-border);
+        }
+
+        .tx-row.return {
+            background-color: var(--return-bg);
+            border-right-color: var(--return-border);
+        }
+
+        .tx-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .tx-type {
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .tx-date {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .tx-desc {
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .tx-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px dashed rgba(0,0,0,0.1);
+            padding-top: 6px;
+        }
+
+        .tx-amount {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .tx-amount.plus {
+            color: #d32f2f;
+        }
+
+        .tx-amount.minus {
+            color: #2e7d32;
+        }
+
+        .tx-balance {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        #lockScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #1e88e5;
+            color: white;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .lock-box {
+            background: white;
+            color: #333;
+            padding: 24px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .lock-box h2 {
+            color: #1e88e5;
+            margin-bottom: 16px;
+        }
+
+        .developer-footer {
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px dashed #ccc;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .developer-footer a {
+            color: #1e88e5;
+            text-decoration: none;
+            font-weight: bold;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .settings-section-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #1e88e5;
+            margin: 14px 0 8px 0;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ============================= */
+        /* Native Contacts UI */
+        /* ============================= */
+
+        .contacts-search {
+            margin-bottom: 10px;
+        }
+
+        .contacts-list {
+            max-height: 55vh;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-item:active {
+            background: #f1f5f9;
+        }
+
+        .contact-avatar {
+            width: 42px;
+            height: 42px;
+            min-width: 42px;
+            border-radius: 50%;
+            background: #e3f2fd;
+            color: #1565c0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contact-name {
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .contact-phone {
+            color: #757575;
+            font-size: 0.85rem;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .contacts-empty {
+            padding: 25px 15px;
+            text-align: center;
+            color: #777;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 
-<body>
+<body class="font-normal">
 
-<div id="app" class="app">
+    <!-- شاشة التسجيل والتفعيل -->
+    <div id="lockScreen">
+        <div class="lock-box">
+            <h2>آیهان قسط</h2>
 
-<header class="header">
-    <div class="header-top">
-        <div class="header-title">📒 دفترچه اقساط</div>
+            <p id="lockSubtitle" style="font-size:0.85rem; color:#666; margin-bottom:16px;">
+                لطفاً وارد شوید
+            </p>
+
+            <!-- مرحلة 1: ادخال كود التفعيل 10 ارقام -->
+            <div id="authLicenseFields" class="hidden">
+                <p style="font-size:0.8rem; color:#d32f2f; margin-bottom:12px;">
+                    کد فعال‌سازی ۱۰ رقمی اختصاصی را وارد کنید:
+                </p>
+
+                <div class="form-group">
+                    <input
+                        type="text"
+                        id="licenseKeyInput"
+                        class="form-control"
+                        placeholder="کد ۱۰ رقمی فعال‌سازی"
+                        maxlength="10"
+                        style="text-align:center; font-size:1.1rem; letter-spacing:2px;"
+                    >
+                </div>
+
+                <button
+                    class="btn btn-warning"
+                    style="width: 100%;"
+                    onclick="activateLicense()"
+                >
+                    فعال‌سازی برنامه 🔑
+                </button>
+            </div>
+
+            <!-- مرحلة 2: تعيين اسم المستخدم وكلمة المرور -->
+            <div id="authSetupFields" class="hidden">
+
+                <p style="font-size:0.8rem; color:#2e7d32; margin-bottom:12px;">
+                    کد لایسنس تایید شد! حالا رمز بگذارید:
+                </p>
+
+                <div class="form-group">
+                    <input
+                        type="text"
+                        id="setupUsername"
+                        class="form-control"
+                        placeholder="تعریف نام کاربری"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="password"
+                        id="setupPassword"
+                        class="form-control"
+                        placeholder="تعریف رمز عبور"
+                    >
+                </div>
+
+                <button
+                    class="btn btn-success"
+                    style="width: 100%;"
+                    onclick="setupCredentials()"
+                >
+                    ثبت و ورود
+                </button>
+            </div>
+
+            <!-- مرحلة 3: تسجيل الدخول اليومي -->
+            <div id="authLoginFields">
+
+                <div class="form-group">
+                    <input
+                        type="text"
+                        id="loginUsername"
+                        class="form-control"
+                        placeholder="نام کاربری"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        class="form-control"
+                        placeholder="رمز عبور"
+                    >
+                </div>
+
+                <button
+                    class="btn"
+                    style="width: 100%; margin-bottom: 8px;"
+                    onclick="loginWithPassword()"
+                >
+                    ورود با رمز عبور
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <header>
+
+        <button
+            class="icon-btn hidden"
+            id="backBtn"
+            onclick="navigateBack()"
+        >
+            ➔
+        </button>
+
+        <h1 id="headerTitle">
+            دفتر قسط آیهان
+        </h1>
 
         <div class="header-actions">
-            <button class="icon-btn" onclick="openSettings()">⚙️</button>
-            <button class="icon-btn" onclick="lockApp()">🔒</button>
-        </div>
-    </div>
-</header>
 
-<main class="container">
-
-    <div class="stats">
-        <div class="stat">
-            <div class="stat-value" id="statCustomers">0</div>
-            <div class="stat-label">مشتری</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-value" id="statNeighborhoods">0</div>
-            <div class="stat-label">محله</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-value" id="statDebt">0</div>
-            <div class="stat-label">مانده کل</div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">عملیات سریع</div>
-
-        <div class="actions">
-            <button class="btn btn-primary" onclick="openCustomerModal()">
-                ➕ افزودن مشتری
-            </button>
-
-            <button class="btn btn-purple" onclick="openContactModal()">
-                📱 مخاطبین
-            </button>
-
-            <button class="btn btn-success" onclick="openNeighborhoodModal()">
-                🏘 افزودن محله
-            </button>
-        </div>
-    </div>
-
-    <div class="tabs">
-        <button id="tabCustomers" class="tab active" onclick="showSection('customers')">
-            👥 مشتریان
-        </button>
-
-        <button id="tabNeighborhoods" class="tab" onclick="showSection('neighborhoods')">
-            🏘 محله‌ها
-        </button>
-    </div>
-
-    <section id="customersSection">
-
-        <div class="card">
-
-            <input
-                id="customerSearch"
-                class="search"
-                placeholder="🔍 جستجوی نام، شماره یا آدرس..."
-                oninput="renderCustomers()"
+            <!-- دکمه همگام‌سازی با فایربیس -->
+            <button
+                class="icon-btn"
+                onclick="syncToFirebase()"
+                title="همگام‌سازی فایربیس"
             >
+                🔥
+            </button>
 
-            <div class="actions" style="margin-bottom:12px">
-                <button class="btn btn-gray" onclick="sortCustomers('name')">
-                    مرتب‌سازی نام
+            <button
+                class="icon-btn"
+                onclick="syncWithGoogleDrive()"
+                title="همگام‌سازی جیمیل"
+            >
+                ☁️
+            </button>
+
+            <button
+                class="icon-btn"
+                onclick="lockApp()"
+                title="قفل‌کردن دستی برنامه"
+            >
+                🔒
+            </button>
+
+            <button
+                class="icon-btn"
+                id="toggleGlobalVisibilityBtn"
+                onclick="toggleGlobalVisibility()"
+                title="مخفی‌سازی/نمایش مبالغ"
+            >
+                👁️
+            </button>
+
+            <button
+                class="icon-btn"
+                onclick="openSettings()"
+                title="تنظیمات"
+            >
+                ⚙️
+            </button>
+
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Dashboard -->
+        <div id="viewNeighborhoods">
+
+            <div class="dashboard-summary">
+
+                <div class="summary-card">
+                    <div class="title">محله‌ها</div>
+                    <div class="value" id="statNeighborhoods">۰</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="title">مشتریان</div>
+                    <div class="value" id="statCustomers">۰</div>
+                </div>
+
+                <div class="summary-card">
+                    <div class="title">کل طلب</div>
+                    <div class="value" id="statTotalBalance">۰</div>
+                </div>
+
+            </div>
+
+            <div class="section-header">
+
+                <h3>
+                    لیست محله‌ها
+                </h3>
+
+                <button
+                    class="btn"
+                    onclick="openAddNeighborhoodModal()"
+                >
+                    + افزودن محله
                 </button>
 
-                <button class="btn btn-gray" onclick="sortCustomers('debt')">
-                    بیشترین بدهی
+            </div>
+
+            <div id="neighborhoodsList"></div>
+
+        </div>
+
+        <!-- Customers View -->
+        <div id="viewCustomers" class="hidden">
+
+            <div class="search-bar-container">
+
+                <input
+                    type="text"
+                    class="search-bar"
+                    id="searchCustomerInput"
+                    placeholder="جستجو نام، شماره یا آدرس..."
+                    oninput="renderCustomers()"
+                >
+
+                <button
+                    class="btn btn-outline"
+                    id="sortDebtorsBtn"
+                    onclick="toggleSortDebtors()"
+                >
+                    🔻 بدهکارترین‌ها
                 </button>
+
+            </div>
+
+            <div class="section-header">
+
+                <h3 id="neighborhoodTitle">
+                    مشتریان
+                </h3>
+
+                <button
+                    class="btn"
+                    onclick="openAddCustomerModal()"
+                >
+                    + افزودن مشتری
+                </button>
+
             </div>
 
             <div id="customersList"></div>
 
         </div>
 
-    </section>
+        <!-- Customer Ledger View -->
+        <div id="viewLedger" class="hidden">
 
-    <section id="neighborhoodsSection" style="display:none">
+            <div class="account-header">
 
-        <div class="card">
-            <div class="card-title">محله‌ها</div>
-            <div id="neighborhoodsList"></div>
-        </div>
+                <h2 id="ledgerCustomerName">
+                    -
+                </h2>
 
-    </section>
+                <p id="ledgerCustomerPhone">
+                    -
+                </p>
 
-    <div class="footer">
-        دفترچه اقساط
-    </div>
+                <p
+                    id="ledgerCustomerAddress"
+                    style="color:#555; font-size:0.85rem; margin-top:4px;"
+                >
+                    📍 آدرس: -
+                </p>
 
-</main>
+                <div class="total-balance-box">
 
-</div>
-
-
-<!-- Customer Modal -->
-<div id="customerModal" class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-            <div class="modal-title">افزودن مشتری</div>
-            <button class="close" onclick="closeModal('customerModal')">×</button>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">نام مشتری</label>
-            <input id="customerName" class="input" placeholder="مثلاً علی رضایی">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">شماره موبایل</label>
-            <input id="customerPhone" class="input" inputmode="tel" placeholder="09xxxxxxxxx">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">آدرس</label>
-            <textarea id="customerAddress" class="textarea" placeholder="آدرس مشتری"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">محله</label>
-            <select id="customerNeighborhood" class="select">
-                <option value="">بدون محله</option>
-            </select>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-gray" onclick="closeModal('customerModal')">
-                انصراف
-            </button>
-
-            <button class="btn btn-primary" onclick="saveCustomer()">
-                ذخیره مشتری
-            </button>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Neighborhood Modal -->
-<div id="neighborhoodModal" class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-            <div class="modal-title">افزودن محله</div>
-            <button class="close" onclick="closeModal('neighborhoodModal')">×</button>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">نام محله</label>
-            <input id="neighborhoodName" class="input" placeholder="نام محله">
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-gray" onclick="closeModal('neighborhoodModal')">
-                انصراف
-            </button>
-
-            <button class="btn btn-success" onclick="saveNeighborhood()">
-                ذخیره
-            </button>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Ledger Modal -->
-<div id="ledgerModal" class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-            <div class="modal-title">دفتر مشتری</div>
-            <button class="close" onclick="closeModal('ledgerModal')">×</button>
-        </div>
-
-        <div id="ledgerContent"></div>
-
-    </div>
-
-</div>
-
-
-<!-- Purchase Modal -->
-<div id="purchaseModal" class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-            <div class="modal-title">ثبت خرید</div>
-            <button class="close" onclick="closeModal('purchaseModal')">×</button>
-        </div>
-
-        <input type="hidden" id="purchaseCustomerId">
-
-        <div class="form-group">
-            <label class="form-label">نام کالا</label>
-            <input id="purchaseProduct" class="input" placeholder="نام کالا">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">مبلغ</label>
-            <input id="purchaseAmount" class="input" inputmode="decimal" placeholder="مبلغ خرید">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">توضیحات</label>
-            <textarea id="purchaseNote" class="textarea" placeholder="توضیحات اختیاری"></textarea>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-gray" onclick="closeModal('purchaseModal')">
-                انصراف
-            </button>
-
-            <button class="btn btn-primary" onclick="savePurchase()">
-                ثبت خرید
-            </button>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Payment Modal -->
-<div id="paymentModal" class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-            <div class="modal-title">ثبت پرداخت</div>
-            <button class="close" onclick="closeModal('paymentModal')">×</button>
-        </div>
-
-        <input type="hidden" id="paymentCustomerId">
-
-        <div class="form-group">
-            <label class="form-label">مبلغ پرداخت</label>
-            <input id="paymentAmount" class="input" inputmode="decimal" placeholder="مبلغ پرداختی">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">توضیحات</label>
-            <textarea id="paymentNote" class="textarea" placeholder="مثلاً قسط اول"></textarea>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-gray" onclick="closeModal('paymentModal')">
-                انصراف
-            </button>
-
-            <button class="btn btn-success" onclick="savePayment()">
-                ثبت پرداخت
-            </button>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Return Modal -->
-<div id="returnModal" class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-            <div class="modal-title">ثبت برگشت</div>
-            <button class="close" onclick="closeModal('returnModal')">×</button>
-        </div>
-
-        <input type="hidden" id="returnCustomerId">
-
-        <div class="form-group">
-            <label class="form-label">نام کالا</label>
-            <input id="returnProduct" class="input" placeholder="نام کالای برگشتی">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">مبلغ برگشت</label>
-            <input id="returnAmount" class="input" inputmode="decimal" placeholder="مبلغ">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">توضیحات</label>
-            <textarea id="returnNote" class="textarea" placeholder="توضیحات"></textarea>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-gray" onclick="closeModal('returnModal')">
-                انصراف
-            </button>
-
-            <button class="btn btn-warning" onclick="saveReturn()">
-                ثبت برگشت
-            </button>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Contact Modal -->
-<div id="contactModal" class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-            <div class="modal-title">انتخاب مخاطب</div>
-            <button class="close" onclick="closeModal('contactModal')">×</button>
-        </div>
-
-        <input
-            id="contactSearch"
-            class="search"
-            placeholder="🔍 جستجوی مخاطب..."
-            oninput="renderContacts()"
-        >
-
-        <div id="contactsList"></div>
-
-    </div>
-
-</div>
-
-
-<!-- Settings Modal -->
-<div id="settingsModal" class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-            <div class="modal-title">تنظیمات</div>
-            <button class="close" onclick="closeModal('settingsModal')">×</button>
-        </div>
-
-        <div class="settings-row">
-            <div>
-                <b>نام صاحب برنامه</b>
-                <div class="small">برای نمایش داخل برنامه</div>
-            </div>
-
-            <input id="ownerName" class="input" style="width:150px" placeholder="نام">
-        </div>
-
-        <div class="settings-row">
-            <div>
-                <b>رمز ورود</b>
-                <div class="small">برای قفل برنامه</div>
-            </div>
-
-            <button class="btn btn-gray" onclick="changePassword()">
-                تغییر
-            </button>
-        </div>
-
-        <div class="settings-row">
-            <div>
-                <b>قفل برنامه</b>
-                <div class="small">قفل دستی برنامه</div>
-            </div>
-
-            <button class="btn btn-danger" onclick="lockApp();closeModal('settingsModal')">
-                🔒 قفل
-            </button>
-        </div>
-
-        <div class="settings-row">
-            <div>
-                <b>پاک کردن همه اطلاعات</b>
-                <div class="small">این عملیات قابل برگشت نیست</div>
-            </div>
-
-            <button class="btn btn-danger" onclick="clearAllData()">
-                حذف
-            </button>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-primary" onclick="saveSettings()">
-                ذخیره تنظیمات
-            </button>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- Lock Screen -->
-<div id="lockScreen" class="lock-screen">
-
-    <div class="lock-box">
-
-        <div class="lock-logo">🔐</div>
-
-        <div class="lock-title">
-            دفترچه اقساط
-        </div>
-
-        <div class="lock-subtitle">
-            برای ورود رمز عبور را وارد کنید
-        </div>
-
-        <input
-            id="loginPassword"
-            class="input"
-            type="password"
-            placeholder="رمز عبور"
-            onkeydown="if(event.key==='Enter')login()"
-        >
-
-        <button
-            class="btn btn-primary"
-            style="width:100%;margin-top:12px"
-            onclick="login()"
-        >
-            ورود
-        </button>
-
-        <div id="loginError"
-             style="color:#dc2626;font-size:12px;margin-top:10px">
-        </div>
-
-    </div>
-
-</div>
-
-
-<script>
-
-const STORAGE_KEY = "daftarche_aghsaate_data";
-const SETTINGS_KEY = "daftarche_aghsaate_settings";
-
-let data = {
-    customers: [],
-    neighborhoods: [],
-    transactions: []
-};
-
-let settings = {
-    ownerName: "",
-    password: "",
-    locked: false
-};
-
-let currentCustomerId = null;
-let currentSort = "name";
-
-let phoneContacts = [];
-
-
-function uid(){
-    return Date.now().toString(36) + Math.random().toString(36).substring(2,9);
-}
-
-
-function normalizeDigits(value){
-    if(!value) return "";
-
-    return String(value)
-        .replace(/[۰-۹]/g, d => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-        .replace(/[٠-٩]/g, d => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
-}
-
-
-function normalizePhone(value){
-
-    let phone = normalizeDigits(value)
-        .replace(/[^\d+]/g,"");
-
-    if(phone.startsWith("+98")){
-        phone = "0" + phone.substring(3);
-    }
-
-    if(phone.startsWith("0098")){
-        phone = "0" + phone.substring(4);
-    }
-
-    if(phone.startsWith("98") && phone.length >= 12){
-        phone = "0" + phone.substring(2);
-    }
-
-    return phone;
-}
-
-
-function money(value){
-
-    value = Number(value || 0);
-
-    return new Intl.NumberFormat("fa-IR").format(value);
-}
-
-
-function now(){
-
-    return new Date().toLocaleString("fa-IR",{
-        year:"numeric",
-        month:"2-digit",
-        day:"2-digit",
-        hour:"2-digit",
-        minute:"2-digit"
-    });
-
-}
-
-
-function saveData(){
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data)
-    );
-
-}
-
-
-function loadData(){
-
-    try{
-
-        const saved =
-            localStorage.getItem(STORAGE_KEY);
-
-        if(saved){
-            data = JSON.parse(saved);
-        }
-
-    }catch(e){
-
-        console.error(e);
-
-    }
-
-}
-
-
-function saveSettingsData(){
-
-    localStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify(settings)
-    );
-
-}
-
-
-function loadSettings(){
-
-    try{
-
-        const saved =
-            localStorage.getItem(SETTINGS_KEY);
-
-        if(saved){
-
-            settings = {
-                ...settings,
-                ...JSON.parse(saved)
-            };
-
-        }
-
-    }catch(e){
-
-        console.error(e);
-
-    }
-
-}
-
-
-function openModal(id){
-
-    document.getElementById(id).classList.add("show");
-
-}
-
-
-function closeModal(id){
-
-    document.getElementById(id).classList.remove("show");
-
-}
-
-
-function showSection(section){
-
-    document.getElementById("customersSection").style.display =
-        section === "customers" ? "block" : "none";
-
-    document.getElementById("neighborhoodsSection").style.display =
-        section === "neighborhoods" ? "block" : "none";
-
-    document.getElementById("tabCustomers").classList.toggle(
-        "active",
-        section === "customers"
-    );
-
-    document.getElementById("tabNeighborhoods").classList.toggle(
-        "active",
-        section === "neighborhoods"
-    );
-
-}
-
-
-function openCustomerModal(){
-
-    document.getElementById("customerName").value = "";
-    document.getElementById("customerPhone").value = "";
-    document.getElementById("customerAddress").value = "";
-
-    updateNeighborhoodSelect();
-
-    openModal("customerModal");
-
-}
-
-
-function updateNeighborhoodSelect(){
-
-    const select =
-        document.getElementById("customerNeighborhood");
-
-    select.innerHTML =
-        '<option value="">بدون محله</option>';
-
-    data.neighborhoods.forEach(n => {
-
-        const option =
-            document.createElement("option");
-
-        option.value = n.id;
-        option.textContent = n.name;
-
-        select.appendChild(option);
-
-    });
-
-}
-
-
-function saveCustomer(){
-
-    const name =
-        document.getElementById("customerName").value.trim();
-
-    const phone =
-        normalizePhone(
-            document.getElementById("customerPhone").value
-        );
-
-    const address =
-        document.getElementById("customerAddress").value.trim();
-
-    const neighborhoodId =
-        document.getElementById("customerNeighborhood").value;
-
-    if(!name){
-
-        alert("نام مشتری را وارد کنید.");
-
-        return;
-
-    }
-
-    if(phone){
-
-        const duplicate =
-            data.customers.find(
-                c => normalizePhone(c.phone) === phone
-            );
-
-        if(duplicate){
-
-            alert(
-                "این شماره قبلاً برای مشتری «" +
-                duplicate.name +
-                "» ثبت شده است."
-            );
-
-            openLedger(duplicate.id);
-
-            closeModal("customerModal");
-
-            return;
-
-        }
-
-    }
-
-    data.customers.push({
-
-        id:uid(),
-
-        name:name,
-
-        phone:phone,
-
-        address:address,
-
-        neighborhoodId:neighborhoodId,
-
-        createdAt:now()
-
-    });
-
-    saveData();
-
-    closeModal("customerModal");
-
-    renderAll();
-
-}
-
-
-function openNeighborhoodModal(){
-
-    document.getElementById("neighborhoodName").value = "";
-
-    openModal("neighborhoodModal");
-
-}
-
-
-function saveNeighborhood(){
-
-    const name =
-        document.getElementById("neighborhoodName")
-        .value
-        .trim();
-
-    if(!name){
-
-        alert("نام محله را وارد کنید.");
-
-        return;
-
-    }
-
-    const exists =
-        data.neighborhoods.some(
-            n => n.name === name
-        );
-
-    if(exists){
-
-        alert("این محله قبلاً ثبت شده است.");
-
-        return;
-
-    }
-
-    data.neighborhoods.push({
-
-        id:uid(),
-
-        name:name,
-
-        createdAt:now()
-
-    });
-
-    saveData();
-
-    closeModal("neighborhoodModal");
-
-    renderAll();
-
-}
-
-
-function getCustomerBalance(customerId){
-
-    let balance = 0;
-
-    data.transactions
-        .filter(t => t.customerId === customerId)
-        .forEach(t => {
-
-            if(t.type === "purchase"){
-                balance += Number(t.amount || 0);
-            }
-
-            if(t.type === "payment"){
-                balance -= Number(t.amount || 0);
-            }
-
-            if(t.type === "return"){
-                balance -= Number(t.amount || 0);
-            }
-
-        });
-
-    return balance;
-
-}
-
-
-function renderStats(){
-
-    document.getElementById("statCustomers")
-        .textContent =
-        money(data.customers.length);
-
-    document.getElementById("statNeighborhoods")
-        .textContent =
-        money(data.neighborhoods.length);
-
-    const total =
-        data.customers.reduce(
-            (sum,c) =>
-                sum + Math.max(0,getCustomerBalance(c.id)),
-            0
-        );
-
-    document.getElementById("statDebt")
-        .textContent = money(total);
-
-}
-
-
-function renderCustomers(){
-
-    const container =
-        document.getElementById("customersList");
-
-    const search =
-        document.getElementById("customerSearch")
-        .value
-        .trim()
-        .toLowerCase();
-
-    let customers =
-        [...data.customers];
-
-    if(search){
-
-        customers =
-            customers.filter(c => {
-
-                return (
-                    c.name.toLowerCase().includes(search) ||
-                    String(c.phone || "").includes(search) ||
-                    String(c.address || "").toLowerCase().includes(search)
-                );
-
-            });
-
-    }
-
-    if(currentSort === "name"){
-
-        customers.sort(
-            (a,b) =>
-                a.name.localeCompare(b.name,"fa")
-        );
-
-    }
-
-    if(currentSort === "debt"){
-
-        customers.sort(
-            (a,b) =>
-                getCustomerBalance(b.id) -
-                getCustomerBalance(a.id)
-        );
-
-    }
-
-    if(customers.length === 0){
-
-        container.innerHTML =
-            '<div class="empty">هنوز مشتری‌ای ثبت نشده است.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML = "";
-
-    customers.forEach(c => {
-
-        const balance =
-            getCustomerBalance(c.id);
-
-        const div =
-            document.createElement("div");
-
-        div.className = "customer";
-
-        div.onclick =
-            () => openLedger(c.id);
-
-        div.innerHTML = `
-
-            <div class="customer-main">
-
-                <div>
-
-                    <div class="customer-name">
-                        ${escapeHtml(c.name)}
+                    <div class="title">
+                        مانده حساب (مانده کل)
                     </div>
 
-                    <div class="customer-phone">
-                        ${escapeHtml(c.phone || "بدون شماره")}
+                    <div class="amount">
+
+                        <span id="ledgerBalance">
+                            ۰ تومان
+                        </span>
+
+                        <button
+                            class="eye-btn-inline"
+                            id="ledgerEyeBtn"
+                            onclick="toggleCurrentCustomerVisibility()"
+                        >
+                            👁️
+                        </button>
+
                     </div>
 
                 </div>
 
-                <div class="balance ${balance > 0 ? "debt" : "clear"}">
+                <div class="share-bar">
 
-                    ${money(Math.abs(balance))}
+                    <button
+                        class="share-btn"
+                        onclick="sendSMS()"
+                    >
+                        💬 پیامک
+                    </button>
 
-                    <div class="small">
-                        ${balance > 0 ? "بدهکار" : "تسویه"}
-                    </div>
+                    <button
+                        class="share-btn"
+                        onclick="sendWhatsApp()"
+                    >
+                        🟢 واتساپ
+                    </button>
+
+                    <button
+                        class="share-btn"
+                        onclick="generatePDF()"
+                    >
+                        📄 PDF
+                    </button>
+
+                    <button
+                        class="share-btn"
+                        onclick="shareTextFacture()"
+                    >
+                        📝 متن صورت‌حساب
+                    </button>
 
                 </div>
 
             </div>
 
-        `;
+            <div class="action-buttons">
 
-        container.appendChild(div);
+                <button
+                    class="action-btn btn-warning"
+                    onclick="openPurchaseModal()"
+                >
+                    🛒 خرید جدید
+                </button>
 
-    });
+                <button
+                    class="action-btn btn-success"
+                    onclick="openPaymentModal()"
+                >
+                    💰 ثبت پرداخت
+                </button>
 
-}
-
-
-function renderNeighborhoods(){
-
-    const container =
-        document.getElementById("neighborhoodsList");
-
-    if(data.neighborhoods.length === 0){
-
-        container.innerHTML =
-            '<div class="empty">هنوز محله‌ای ثبت نشده است.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML = "";
-
-    data.neighborhoods.forEach(n => {
-
-        const count =
-            data.customers.filter(
-                c => c.neighborhoodId === n.id
-            ).length;
-
-        const div =
-            document.createElement("div");
-
-        div.className = "neighborhood";
-
-        div.innerHTML = `
-
-            <div>
-
-                <b>${escapeHtml(n.name)}</b>
-
-                <div class="small">
-                    ${money(count)} مشتری
-                </div>
+                <button
+                    class="action-btn btn-danger"
+                    onclick="openReturnModal()"
+                >
+                    ↩️ برگشت کالا
+                </button>
 
             </div>
 
-            <button
-                class="btn btn-danger"
-                onclick="deleteNeighborhood('${n.id}',event)"
-            >
-                حذف
-            </button>
+            <h3 style="margin-bottom: 8px; font-size: 1rem;">
+                دفترچه تراکنش‌ها
+            </h3>
 
-        `;
+            <div id="transactionsList"></div>
 
-        container.appendChild(div);
+        </div>
+    </div>
 
-    });
+    <!-- Modals -->
 
-}
+    <div class="modal" id="modalNeighborhood">
 
+        <div class="modal-content">
 
-function deleteNeighborhood(id,event){
-
-    event.stopPropagation();
-
-    const hasCustomers =
-        data.customers.some(
-            c => c.neighborhoodId === id
-        );
-
-    if(hasCustomers){
-
-        alert(
-            "این محله مشتری دارد و فعلاً قابل حذف نیست."
-        );
-
-        return;
-
-    }
-
-    if(!confirm("محله حذف شود؟")) return;
-
-    data.neighborhoods =
-        data.neighborhoods.filter(
-            n => n.id !== id
-        );
-
-    saveData();
-
-    renderAll();
-
-}
-
-
-function sortCustomers(type){
-
-    currentSort = type;
-
-    renderCustomers();
-
-}
-
-
-function openLedger(customerId){
-
-    currentCustomerId = customerId;
-
-    const customer =
-        data.customers.find(
-            c => c.id === customerId
-        );
-
-    if(!customer) return;
-
-    renderLedger();
-
-    openModal("ledgerModal");
-
-}
-
-
-function renderLedger(){
-
-    const customer =
-        data.customers.find(
-            c => c.id === currentCustomerId
-        );
-
-    if(!customer) return;
-
-    const balance =
-        getCustomerBalance(customer.id);
-
-    const neighborhood =
-        data.neighborhoods.find(
-            n => n.id === customer.neighborhoodId
-        );
-
-    const transactions =
-        data.transactions
-        .filter(t => t.customerId === customer.id)
-        .sort((a,b) => b.createdTimestamp - a.createdTimestamp);
-
-    let html = `
-
-        <div class="ledger-header">
-
-            <div class="ledger-name">
-                ${escapeHtml(customer.name)}
+            <div class="modal-title">
+                افزودن محله جدید
             </div>
 
-            <div class="ledger-info">
-                📞 ${escapeHtml(customer.phone || "بدون شماره")}
+            <div class="form-group">
+
+                <label>
+                    نام محله
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputNeighborhoodName"
+                    placeholder="مثال: ولیعصر"
+                >
+
             </div>
 
-            <div class="ledger-info">
-                📍 ${escapeHtml(customer.address || "بدون آدرس")}
-            </div>
+            <div class="modal-actions">
 
-            <div class="ledger-info">
-                🏘 ${escapeHtml(neighborhood ? neighborhood.name : "بدون محله")}
-            </div>
+                <button
+                    class="btn btn-danger"
+                    onclick="closeModal('modalNeighborhood')"
+                >
+                    انصراف
+                </button>
 
-            <div class="ledger-balance">
-                ${money(Math.abs(balance))}
-                تومان
-                <div style="font-size:12px">
-                    ${balance > 0 ? "بدهکار" : "تسویه"}
-                </div>
+                <button
+                    class="btn btn-success"
+                    onclick="saveNeighborhood()"
+                >
+                    ذخیره
+                </button>
+
             </div>
 
         </div>
+    </div>
 
-        <div class="actions" style="margin-bottom:15px">
+    <div class="modal" id="modalCustomer">
 
+        <div class="modal-content">
+
+            <div class="modal-title">
+                افزودن مشتری جدید
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    نام و نام خانوادگی
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputCustomerName"
+                    placeholder="مثال: علی رضایی"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    شماره تماس (اختیاری)
+                </label>
+
+                <input
+                    type="tel"
+                    class="form-control"
+                    id="inputCustomerPhone"
+                    placeholder="۰۹۱۲..."
+                >
+
+            </div>
+
+            <!-- انتخاب مخاطب گوشی -->
             <button
-                class="btn btn-primary"
-                onclick="openPurchaseModal('${customer.id}')"
+                type="button"
+                class="btn btn-outline"
+                style="width:100%; margin-bottom:12px;"
+                onclick="openNativeContacts()"
             >
-                🛒 خرید
+                📱 انتخاب از مخاطبین گوشی
             </button>
 
-            <button
-                class="btn btn-success"
-                onclick="openPaymentModal('${customer.id}')"
-            >
-                💵 پرداخت
-            </button>
+            <div class="form-group">
+
+                <label>
+                    آدرس کامل (اختیاری)
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputCustomerAddress"
+                    placeholder="خیابان... پلاک..."
+                >
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    class="btn btn-danger"
+                    onclick="closeModal('modalCustomer')"
+                >
+                    انصراف
+                </button>
+
+                <button
+                    class="btn btn-success"
+                    onclick="saveCustomer()"
+                >
+                    ذخیره
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- پنجره لیست مخاطبین گوشی -->
+    <div class="modal" id="modalNativeContacts">
+
+        <div class="modal-content">
+
+            <div class="modal-title">
+                📱 انتخاب مخاطب
+            </div>
+
+            <div class="form-group contacts-search">
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="nativeContactsSearch"
+                    placeholder="جستجوی نام یا شماره..."
+                    oninput="filterNativeContacts()"
+                >
+
+            </div>
+
+            <div
+                id="nativeContactsList"
+                class="contacts-list"
+            ></div>
+
+            <div class="modal-actions">
+
+                <button
+                    class="btn btn-danger"
+                    onclick="closeModal('modalNativeContacts')"
+                >
+                    بستن
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" id="modalPurchase">
+
+        <div class="modal-content">
+
+            <div class="modal-title">
+                🛒 ثبت خرید جدید
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    نام کالا
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputPurchaseProduct"
+                    placeholder="مثال: یخچال"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    تعداد
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    id="inputPurchaseQty"
+                    value="1"
+                    oninput="calcPurchaseTotal()"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    قیمت واحد (تومان)
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    id="inputPurchaseUnitPrice"
+                    placeholder="مثال: ۱۰000000"
+                    oninput="calcPurchaseTotal()"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    قیمت کل (تومان)
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputPurchaseTotal"
+                    readonly
+                    value="۰"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    تاریخ (شمسی)
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputPurchaseDate"
+                    placeholder="۱۴۰۵/۰۷/۱۰"
+                >
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    class="btn btn-danger"
+                    onclick="closeModal('modalPurchase')"
+                >
+                    انصراف
+                </button>
+
+                <button
+                    class="btn btn-success"
+                    onclick="savePurchase()"
+                >
+                    ثبت خرید
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" id="modalPayment">
+
+        <div class="modal-content">
+
+            <div class="modal-title">
+                💰 ثبت دریافت / پرداخت قسط
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    مبلغ (تومان)
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    id="inputPaymentAmount"
+                    placeholder="مثال: ۲۰۰۰۰۰۰"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    تاریخ (شمسی)
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputPaymentDate"
+                    placeholder="۱۴۰۵/۰۷/۱۵"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    توضیحات (اختیاری)
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputPaymentNote"
+                    placeholder="پرداخت قسط"
+                >
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    class="btn btn-danger"
+                    onclick="closeModal('modalPayment')"
+                >
+                    انصراف
+                </button>
+
+                <button
+                    class="btn btn-success"
+                    onclick="savePayment()"
+                >
+                    ثبت پرداخت
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" id="modalReturn">
+
+        <div class="modal-content">
+
+            <div class="modal-title">
+                ↩️ برگشت کالا
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    انتخاب کالای خریداری شده
+                </label>
+
+                <select
+                    class="form-control"
+                    id="selectReturnProduct"
+                    onchange="updateReturnMaxQty()"
+                ></select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    تعداد مرجوعی
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    id="inputReturnQty"
+                    value="1"
+                    min="1"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    تاریخ (شمسی)
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="inputReturnDate"
+                    placeholder="۱۴۰۵/۰۷/۳۰"
+                >
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    class="btn btn-danger"
+                    onclick="closeModal('modalReturn')"
+                >
+                    انصراف
+                </button>
+
+                <button
+                    class="btn btn-success"
+                    onclick="saveReturn()"
+                >
+                    ثبت برگشتی
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- تنظیمات پیشرفته -->
+    <div class="modal" id="modalSettings">
+
+        <div class="modal-content">
+
+            <div class="modal-title">
+                تنظیمات برنامه
+            </div>
+
+            <div class="settings-section-title">
+                ⏱️ تنظیمات قفل خودکار و امنیت
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    تایمر قفل خودکار عدم فعالیت (دقیقه)
+                </label>
+
+                <select
+                    id="autoLockSelect"
+                    class="form-control"
+                    onchange="changeAutoLockTime()"
+                >
+                    <option value="0">
+                        غیرفعال (فقط قفل دستی با آیکون 🔒)
+                    </option>
+
+                    <option value="1">
+                        ۱ دقیقه
+                    </option>
+
+                    <option value="2">
+                        ۲ دقیقه
+                    </option>
+
+                    <option value="5">
+                        ۵ دقیقه
+                    </option>
+
+                    <option value="10">
+                        ۱۰ دقیقه
+                    </option>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    نام کاربری ورود
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="editUsername"
+                    placeholder="نام کاربری"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    رمز عبور جدید
+                </label>
+
+                <input
+                    type="password"
+                    class="form-control"
+                    id="editPassword"
+                    placeholder="رمز عبور جدید"
+                >
+
+            </div>
 
             <button
                 class="btn btn-warning"
-                onclick="openReturnModal('${customer.id}')"
+                style="width:100%; margin-bottom:12px;"
+                onclick="updateSecurityCredentials()"
             >
-                ↩️ برگشت
+                بروزرسانی اطلاعات ورود
             </button>
 
+            <div class="settings-section-title">
+                📧 همگام‌سازی جیمیل و گوگل درایو
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Client ID گوگل کلود
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="googleClientIdInput"
+                    placeholder="...apps.googleusercontent.com"
+                >
+
+            </div>
+
             <button
-                class="btn btn-gray"
-                onclick="sendSMS('${customer.id}')"
+                class="btn btn-outline"
+                style="width:100%; margin-bottom:8px;"
+                onclick="saveGoogleClientId()"
             >
-                💬 SMS
+                ذخیره کلید جیمیل
             </button>
 
             <button
                 class="btn btn-success"
-                onclick="sendWhatsApp('${customer.id}')"
+                style="width:100%; margin-bottom:12px;"
+                onclick="syncWithGoogleDrive()"
             >
-                WhatsApp
+                ☁️ پشتیبان‌گیری در گوگل درایو
             </button>
 
-        </div>
-
-        <div class="card" style="box-shadow:none;border:1px solid #edf0f5">
-
-            <div class="card-title">
-                گردش حساب
+            <div class="settings-section-title">
+                👤 برندینگ و فونت
             </div>
 
-    `;
+            <div class="form-group">
 
-    if(transactions.length === 0){
+                <label>
+                    نام فروشگاه / صاحب حساب
+                </label>
 
-        html +=
-            '<div class="empty">هنوز تراکنشی ثبت نشده است.</div>';
+                <input
+                    type="text"
+                    class="form-control"
+                    id="ownerNameInput"
+                    placeholder="مثال: آیهان"
+                >
 
-    }else{
-
-        transactions.forEach(t => {
-
-            let title = "";
-            let cls = "";
-            let sign = "";
-
-            if(t.type === "purchase"){
-
-                title =
-                    "🛒 " +
-                    (t.product || "خرید");
-
-                cls = "plus";
-                sign = "+";
-
-            }
-
-            if(t.type === "payment"){
-
-                title =
-                    "💵 پرداخت";
-
-                cls = "minus";
-                sign = "-";
-
-            }
-
-            if(t.type === "return"){
-
-                title =
-                    "↩️ برگشت " +
-                    (t.product || "");
-
-                cls = "minus";
-                sign = "-";
-
-            }
-
-            html += `
-
-                <div class="transaction">
-
-                    <div>
-
-                        <div class="transaction-title">
-                            ${escapeHtml(title)}
-                        </div>
-
-                        <div class="transaction-date">
-                            ${escapeHtml(t.date)}
-                        </div>
-
-                        ${
-                            t.note
-                            ?
-                            `<div class="small">
-                                ${escapeHtml(t.note)}
-                            </div>`
-                            :
-                            ""
-                        }
-
-                    </div>
-
-                    <div class="transaction-amount ${cls}">
-                        ${sign}${money(t.amount)}
-                    </div>
-
-                </div>
-
-            `;
-
-        });
-
-    }
-
-    html += `
-        </div>
-
-        <div class="actions" style="margin-top:12px">
+            </div>
 
             <button
-                class="btn btn-danger"
-                onclick="deleteCustomer('${customer.id}')"
+                class="btn btn-outline"
+                style="width:100%; margin-bottom:12px;"
+                onclick="saveOwnerName()"
             >
-                حذف مشتری
+                ذخیره نام
             </button>
 
+            <div class="form-group">
+
+                <label>
+                    اندازه فونت برنامه
+                </label>
+
+                <select
+                    id="fontSizeSelect"
+                    class="form-control"
+                    onchange="changeFontSize()"
+                >
+                    <option value="font-normal">
+                        استاندارد
+                    </option>
+
+                    <option value="font-large">
+                        بزرگ
+                    </option>
+
+                    <option value="font-xlarge">
+                        خیلی بزرگ
+                    </option>
+                </select>
+
+            </div>
+
+            <div class="developer-footer">
+
+                <div>
+                    📌 <strong>برنامه آیهان قسط</strong> - نسخه 1.6.0
+                </div>
+
+                <div>
+                    👨‍💻 <strong>توسعه‌دهنده:</strong> حسین جاویدی
+                </div>
+
+                <div>
+                    💬 <strong>تلگرام:</strong>
+                    <a
+                        href="https://t.me/hosseinjavidi666"
+                        target="_blank"
+                    >
+                        @hosseinjavidi666
+                    </a>
+                </div>
+
+            </div>
+
+            <div
+                class="modal-actions"
+                style="margin-top: 12px;"
+            >
+
+                <button
+                    class="btn"
+                    style="width:100%;"
+                    onclick="closeModal('modalSettings')"
+                >
+                    بستن
+                </button>
+
+            </div>
+
         </div>
-    `;
+    </div>
 
-    document.getElementById("ledgerContent")
-        .innerHTML = html;
+    <script>
+    // ==================== GLOBAL STATE ====================
 
+const VALID_LICENSE_KEYS = [
+    "1020304050",
+    "8899112233",
+    "5544332211",
+    "9988776655",
+    "1234567890",
+    "7788990011"
+];
+
+let db;
+let isGlobalVisible = false;
+let visibleCustomerIds = new Set();
+let sortByDebtors = false;
+let autoLockMinutes = 0;
+let inactivityTimer = null;
+
+let currentView = 'neighborhoods';
+let selectedNeighborhoodId = null;
+let selectedCustomerId = null;
+let currentCustomerObj = null;
+let currentCustomerBalance = 0;
+let customerProducts = [];
+
+let nativeContactsCache = [];
+let nativeContactsFiltered = [];
+
+
+// ==================== DATABASE ====================
+
+const DB_NAME = 'AyhanGhesstDB';
+const DB_VERSION = 1;
+
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onupgradeneeded = function(event) {
+            const database = event.target.result;
+
+            if (!database.objectStoreNames.contains('neighborhoods')) {
+                database.createObjectStore('neighborhoods', {
+                    keyPath: 'id',
+                    autoIncrement: true
+                });
+            }
+
+            if (!database.objectStoreNames.contains('customers')) {
+                database.createObjectStore('customers', {
+                    keyPath: 'id',
+                    autoIncrement: true
+                });
+            }
+
+            if (!database.objectStoreNames.contains('products')) {
+                database.createObjectStore('products', {
+                    keyPath: 'id',
+                    autoIncrement: true
+                });
+            }
+
+            if (!database.objectStoreNames.contains('transactions')) {
+                database.createObjectStore('transactions', {
+                    keyPath: 'id',
+                    autoIncrement: true
+                });
+            }
+        };
+
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            resolve(db);
+        };
+
+        request.onerror = function(event) {
+            reject(event.target.error);
+        };
+    });
 }
 
 
-function openPurchaseModal(customerId){
+function addRecord(storeName, data) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
+        const store = transaction.objectStore(storeName);
 
-    document.getElementById("purchaseCustomerId")
-        .value = customerId;
+        const request = store.add(data);
 
-    document.getElementById("purchaseProduct")
-        .value = "";
+        request.onsuccess = function() {
+            resolve(request.result);
+        };
 
-    document.getElementById("purchaseAmount")
-        .value = "";
-
-    document.getElementById("purchaseNote")
-        .value = "";
-
-    openModal("purchaseModal");
-
+        request.onerror = function() {
+            reject(request.error);
+        };
+    });
 }
 
 
-function savePurchase(){
+function updateRecord(storeName, data) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
+        const store = transaction.objectStore(storeName);
 
-    const customerId =
-        document.getElementById("purchaseCustomerId").value;
+        const request = store.put(data);
 
-    const product =
-        document.getElementById("purchaseProduct")
-        .value.trim();
+        request.onsuccess = function() {
+            resolve(request.result);
+        };
 
-    const amount =
-        Number(
-            normalizeDigits(
-                document.getElementById("purchaseAmount").value
-            ).replace(/,/g,"")
+        request.onerror = function() {
+            reject(request.error);
+        };
+    });
+}
+
+
+function deleteRecord(storeName, id) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readwrite');
+        const store = transaction.objectStore(storeName);
+
+        const request = store.delete(id);
+
+        request.onsuccess = function() {
+            resolve();
+        };
+
+        request.onerror = function() {
+            reject(request.error);
+        };
+    });
+}
+
+
+function getAll(storeName) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readonly');
+        const store = transaction.objectStore(storeName);
+
+        const request = store.getAll();
+
+        request.onsuccess = function() {
+            resolve(request.result || []);
+        };
+
+        request.onerror = function() {
+            reject(request.error);
+        };
+    });
+}
+
+
+function getRecord(storeName, id) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], 'readonly');
+        const store = transaction.objectStore(storeName);
+
+        const request = store.get(id);
+
+        request.onsuccess = function() {
+            resolve(request.result);
+        };
+
+        request.onerror = function() {
+            reject(request.error);
+        };
+    });
+}
+
+
+// ==================== START APP ====================
+
+window.onload = async function() {
+    try {
+        await initDB();
+
+        loadSettings();
+        checkLicense();
+        setupActivityListeners();
+
+        renderNeighborhoods();
+    } catch (error) {
+        console.error(error);
+        alert('خطا در راه‌اندازی برنامه: ' + error.message);
+    }
+};
+
+
+// ==================== LICENSE / LOCK ====================
+
+function checkLicense() {
+    const savedKey = localStorage.getItem('ayhan_license');
+
+    if (!savedKey || !VALID_LICENSE_KEYS.includes(savedKey)) {
+        const licenseModal = document.getElementById('modalLicense');
+
+        if (licenseModal) {
+            licenseModal.style.display = 'flex';
+        }
+    }
+}
+
+
+function activateLicense() {
+    const input = document.getElementById('inputLicense');
+
+    if (!input) return;
+
+    const key = input.value.trim();
+
+    if (VALID_LICENSE_KEYS.includes(key)) {
+        localStorage.setItem('ayhan_license', key);
+
+        const modal = document.getElementById('modalLicense');
+
+        if (modal) {
+            modal.style.display = 'none';
+        }
+
+        alert('فعال‌سازی با موفقیت انجام شد ✅');
+    } else {
+        alert('کد فعال‌سازی صحیح نیست ❌');
+    }
+}
+
+
+function lockApp() {
+    const lockScreen = document.getElementById('lockScreen');
+
+    if (lockScreen) {
+        lockScreen.style.display = 'flex';
+    }
+}
+
+
+function unlockApp() {
+    const usernameInput = document.getElementById('unlockUsername');
+    const passwordInput = document.getElementById('unlockPassword');
+
+    const savedUsername =
+        localStorage.getItem('ayhan_username') || '';
+
+    const savedPassword =
+        localStorage.getItem('ayhan_password') || '';
+
+    const username = usernameInput ? usernameInput.value : '';
+    const password = passwordInput ? passwordInput.value : '';
+
+    if (
+        username === savedUsername &&
+        password === savedPassword
+    ) {
+        document.getElementById('lockScreen').style.display = 'none';
+
+        if (usernameInput) usernameInput.value = '';
+        if (passwordInput) passwordInput.value = '';
+
+        resetInactivityTimer();
+    } else {
+        alert('نام کاربری یا رمز عبور اشتباه است');
+    }
+}
+
+
+// ==================== ACTIVITY / AUTO LOCK ====================
+
+function setupActivityListeners() {
+    const events = [
+        'click',
+        'touchstart',
+        'keydown',
+        'scroll'
+    ];
+
+    events.forEach(eventName => {
+        document.addEventListener(
+            eventName,
+            resetInactivityTimer,
+            { passive: true }
         );
-
-    const note =
-        document.getElementById("purchaseNote")
-        .value.trim();
-
-    if(!product){
-
-        alert("نام کالا را وارد کنید.");
-
-        return;
-
-    }
-
-    if(!amount || amount <= 0){
-
-        alert("مبلغ معتبر وارد کنید.");
-
-        return;
-
-    }
-
-    addTransaction(
-        customerId,
-        "purchase",
-        amount,
-        product,
-        note
-    );
-
-    closeModal("purchaseModal");
-
-    renderLedger();
-
-    renderAll();
-
-}
-
-
-function openPaymentModal(customerId){
-
-    document.getElementById("paymentCustomerId")
-        .value = customerId;
-
-    document.getElementById("paymentAmount")
-        .value = "";
-
-    document.getElementById("paymentNote")
-        .value = "";
-
-    openModal("paymentModal");
-
-}
-
-
-function savePayment(){
-
-    const customerId =
-        document.getElementById("paymentCustomerId").value;
-
-    const amount =
-        Number(
-            normalizeDigits(
-                document.getElementById("paymentAmount").value
-            ).replace(/,/g,"")
-        );
-
-    const note =
-        document.getElementById("paymentNote")
-        .value.trim();
-
-    if(!amount || amount <= 0){
-
-        alert("مبلغ معتبر وارد کنید.");
-
-        return;
-
-    }
-
-    addTransaction(
-        customerId,
-        "payment",
-        amount,
-        "",
-        note
-    );
-
-    closeModal("paymentModal");
-
-    renderLedger();
-
-    renderAll();
-
-}
-
-
-function openReturnModal(customerId){
-
-    document.getElementById("returnCustomerId")
-        .value = customerId;
-
-    document.getElementById("returnProduct")
-        .value = "";
-
-    document.getElementById("returnAmount")
-        .value = "";
-
-    document.getElementById("returnNote")
-        .value = "";
-
-    openModal("returnModal");
-
-}
-
-
-function saveReturn(){
-
-    const customerId =
-        document.getElementById("returnCustomerId").value;
-
-    const product =
-        document.getElementById("returnProduct")
-        .value.trim();
-
-    const amount =
-        Number(
-            normalizeDigits(
-                document.getElementById("returnAmount").value
-            ).replace(/,/g,"")
-        );
-
-    const note =
-        document.getElementById("returnNote")
-        .value.trim();
-
-    if(!product){
-
-        alert("نام کالا را وارد کنید.");
-
-        return;
-
-    }
-
-    if(!amount || amount <= 0){
-
-        alert("مبلغ معتبر وارد کنید.");
-
-        return;
-
-    }
-
-    addTransaction(
-        customerId,
-        "return",
-        amount,
-        product,
-        note
-    );
-
-    closeModal("returnModal");
-
-    renderLedger();
-
-    renderAll();
-
-}
-
-
-function addTransaction(
-    customerId,
-    type,
-    amount,
-    product,
-    note
-){
-
-    data.transactions.push({
-
-        id:uid(),
-
-        customerId:customerId,
-
-        type:type,
-
-        amount:Number(amount),
-
-        product:product || "",
-
-        note:note || "",
-
-        date:now(),
-
-        createdTimestamp:Date.now()
-
     });
 
-    saveData();
-
+    resetInactivityTimer();
 }
 
 
-function deleteCustomer(id){
-
-    const customer =
-        data.customers.find(
-            c => c.id === id
-        );
-
-    if(!customer) return;
-
-    if(!confirm(
-        "مشتری «" +
-        customer.name +
-        "» و تمام تراکنش‌های او حذف شود؟"
-    )) return;
-
-    data.customers =
-        data.customers.filter(
-            c => c.id !== id
-        );
-
-    data.transactions =
-        data.transactions.filter(
-            t => t.customerId !== id
-        );
-
-    saveData();
-
-    closeModal("ledgerModal");
-
-    renderAll();
-
-}
-
-
-function sendSMS(id){
-
-    const customer =
-        data.customers.find(
-            c => c.id === id
-        );
-
-    if(!customer || !customer.phone){
-
-        alert("شماره موبایل ثبت نشده است.");
-
-        return;
-
+function resetInactivityTimer() {
+    if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
     }
 
-    const balance =
-        getCustomerBalance(id);
+    if (!autoLockMinutes || autoLockMinutes <= 0) {
+        return;
+    }
 
-    const text =
-        `سلام ${customer.name}، مانده حساب شما ${money(Math.abs(balance))} تومان است.`;
-
-    window.location.href =
-        "sms:" +
-        encodeURIComponent(customer.phone) +
-        "?body=" +
-        encodeURIComponent(text);
-
+    inactivityTimer = setTimeout(() => {
+        lockApp();
+    }, autoLockMinutes * 60 * 1000);
 }
 
 
-function sendWhatsApp(id){
+// ==================== SETTINGS ====================
 
-    const customer =
-        data.customers.find(
-            c => c.id === id
+function loadSettings() {
+    const fontSize =
+        localStorage.getItem('ayhan_font_size') || '14';
+
+    const ownerName =
+        localStorage.getItem('ayhan_owner_name') || '';
+
+    autoLockMinutes =
+        parseInt(
+            localStorage.getItem('ayhan_auto_lock') || '0',
+            10
         );
 
-    if(!customer || !customer.phone){
+    const username =
+        localStorage.getItem('ayhan_username') || '';
 
-        alert("شماره موبایل ثبت نشده است.");
+    const password =
+        localStorage.getItem('ayhan_password') || '';
 
+    const googleClientId =
+        localStorage.getItem('ayhan_google_client_id') || '';
+
+    document.documentElement.style.setProperty(
+        '--base-font-size',
+        fontSize + 'px'
+    );
+
+    const fontInput = document.getElementById('settingFontSize');
+    if (fontInput) fontInput.value = fontSize;
+
+    const ownerInput = document.getElementById('settingOwnerName');
+    if (ownerInput) ownerInput.value = ownerName;
+
+    const autoLockInput = document.getElementById('settingAutoLock');
+    if (autoLockInput) autoLockInput.value = autoLockMinutes;
+
+    const usernameInput = document.getElementById('settingUsername');
+    if (usernameInput) usernameInput.value = username;
+
+    const passwordInput = document.getElementById('settingPassword');
+    if (passwordInput) passwordInput.value = password;
+
+    const googleInput = document.getElementById('settingGoogleClientId');
+    if (googleInput) googleInput.value = googleClientId;
+}
+
+
+function saveSettings() {
+    const fontSize =
+        document.getElementById('settingFontSize')?.value || '14';
+
+    const ownerName =
+        document.getElementById('settingOwnerName')?.value.trim() || '';
+
+    const autoLock =
+        document.getElementById('settingAutoLock')?.value || '0';
+
+    const username =
+        document.getElementById('settingUsername')?.value.trim() || '';
+
+    const password =
+        document.getElementById('settingPassword')?.value || '';
+
+    const googleClientId =
+        document.getElementById('settingGoogleClientId')?.value.trim() || '';
+
+    localStorage.setItem('ayhan_font_size', fontSize);
+    localStorage.setItem('ayhan_owner_name', ownerName);
+    localStorage.setItem('ayhan_auto_lock', autoLock);
+    localStorage.setItem('ayhan_username', username);
+    localStorage.setItem('ayhan_password', password);
+    localStorage.setItem('ayhan_google_client_id', googleClientId);
+
+    autoLockMinutes = parseInt(autoLock, 10) || 0;
+
+    document.documentElement.style.setProperty(
+        '--base-font-size',
+        fontSize + 'px'
+    );
+
+    resetInactivityTimer();
+
+    closeModal('modalSettings');
+
+    updateHeaderTitle();
+
+    alert('تنظیمات ذخیره شد ✅');
+}
+
+
+function updateHeaderTitle() {
+    const name =
+        localStorage.getItem('ayhan_owner_name') || '';
+
+    const headerTitle =
+        document.getElementById('headerTitle');
+
+    if (!headerTitle) return;
+
+    if (name) {
+        headerTitle.innerText = `دفتر قسط ${name}`;
+    } else {
+        headerTitle.innerText = 'آیهان قسط';
+    }
+}
+
+
+// ==================== NEIGHBORHOODS ====================
+
+async function renderNeighborhoods() {
+    currentView = 'neighborhoods';
+
+    const container =
+        document.getElementById('neighborhoodList');
+
+    if (!container) return;
+
+    const neighborhoods =
+        await getAll('neighborhoods');
+
+    container.innerHTML = '';
+
+    if (!neighborhoods.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🏘️</div>
+                <div>هنوز محله‌ای ثبت نشده است</div>
+            </div>
+        `;
+
+        updateHeaderTitle();
         return;
+    }
 
+    neighborhoods.sort((a, b) =>
+        (a.name || '').localeCompare(
+            b.name || '',
+            'fa'
+        )
+    );
+
+    for (const neighborhood of neighborhoods) {
+        const customers =
+            await getAll('customers');
+
+        const count =
+            customers.filter(
+                c => c.neighborhoodId === neighborhood.id
+            ).length;
+
+        const card =
+            document.createElement('div');
+
+        card.className = 'list-card';
+
+        card.innerHTML = `
+            <div
+                class="list-card-main"
+                onclick="openNeighborhood(${neighborhood.id})"
+            >
+                <div class="list-card-icon">🏘️</div>
+
+                <div class="list-card-info">
+                    <div class="list-card-title">
+                        ${escapeHtml(neighborhood.name)}
+                    </div>
+
+                    <div class="list-card-subtitle">
+                        ${count} مشتری
+                    </div>
+                </div>
+            </div>
+
+            <div class="list-card-actions">
+                <button
+                    class="icon-btn"
+                    onclick="event.stopPropagation(); editNeighborhood(${neighborhood.id})"
+                >
+                    ✏️
+                </button>
+
+                <button
+                    class="icon-btn danger"
+                    onclick="event.stopPropagation(); deleteNeighborhood(${neighborhood.id})"
+                >
+                    🗑️
+                </button>
+            </div>
+        `;
+
+        container.appendChild(card);
+    }
+
+    updateHeaderTitle();
+}
+
+
+function openAddNeighborhoodModal() {
+    const input =
+        document.getElementById('inputNeighborhoodName');
+
+    if (input) {
+        input.value = '';
+    }
+
+    document.getElementById('modalNeighborhood').style.display = 'flex';
+}
+
+
+async function saveNeighborhood() {
+    const input =
+        document.getElementById('inputNeighborhoodName');
+
+    const name =
+        input?.value.trim() || '';
+
+    if (!name) {
+        alert('لطفاً نام محله را وارد کنید');
+        return;
+    }
+
+    await addRecord('neighborhoods', {
+        name,
+        createdAt: Date.now()
+    });
+
+    closeModal('modalNeighborhood');
+
+    renderNeighborhoods();
+}
+
+
+async function editNeighborhood(id) {
+    const neighborhood =
+        await getRecord('neighborhoods', id);
+
+    if (!neighborhood) return;
+
+    const newName =
+        prompt(
+            'نام جدید محله:',
+            neighborhood.name
+        );
+
+    if (newName === null) return;
+
+    const name = newName.trim();
+
+    if (!name) {
+        alert('نام محله نمی‌تواند خالی باشد');
+        return;
+    }
+
+    neighborhood.name = name;
+
+    await updateRecord(
+        'neighborhoods',
+        neighborhood
+    );
+
+    renderNeighborhoods();
+}
+
+
+async function deleteNeighborhood(id) {
+    const customers =
+        await getAll('customers');
+
+    const hasCustomers =
+        customers.some(
+            c => c.neighborhoodId === id
+        );
+
+    if (hasCustomers) {
+        alert(
+            'این محله دارای مشتری است و حذف نمی‌شود.'
+        );
+        return;
+    }
+
+    if (!confirm('آیا از حذف این محله مطمئن هستید؟')) {
+        return;
+    }
+
+    await deleteRecord('neighborhoods', id);
+
+    renderNeighborhoods();
+}
+
+
+async function openNeighborhood(id) {
+    selectedNeighborhoodId = id;
+
+    const neighborhood =
+        await getRecord('neighborhoods', id);
+
+    if (!neighborhood) return;
+
+    currentView = 'customers';
+
+    const title =
+        document.getElementById('neighborhoodTitle');
+
+    if (title) {
+        title.innerText =
+            `مشتریان محله ${neighborhood.name}`;
+    }
+
+    document.getElementById(
+        'viewNeighborhoods'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'viewCustomers'
+    ).style.display = 'block';
+
+    document.getElementById(
+        'viewLedger'
+    ).style.display = 'none';
+
+    renderCustomers();
+}
+
+
+// ==================== CUSTOMERS ====================
+
+async function renderCustomers() {
+    const container =
+        document.getElementById('customerList');
+
+    if (!container) return;
+
+    let customers =
+        await getAll('customers');
+
+    customers =
+        customers.filter(
+            c => c.neighborhoodId === selectedNeighborhoodId
+        );
+
+    container.innerHTML = '';
+
+    if (!customers.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">👤</div>
+                <div>هنوز مشتری‌ای ثبت نشده است</div>
+            </div>
+        `;
+        return;
+    }
+
+    const transactions =
+        await getAll('transactions');
+
+    const customerBalances = {};
+
+    customers.forEach(customer => {
+        customerBalances[customer.id] = 0;
+    });
+
+    transactions.forEach(transaction => {
+        if (
+            customerBalances[
+                transaction.customerId
+            ] !== undefined
+        ) {
+            customerBalances[
+                transaction.customerId
+            ] += Number(transaction.amount || 0);
+        }
+    });
+
+    if (sortByDebtors) {
+        customers.sort(
+            (a, b) =>
+                (customerBalances[b.id] || 0) -
+                (customerBalances[a.id] || 0)
+        );
+    } else {
+        customers.sort((a, b) =>
+            (a.name || '').localeCompare(
+                b.name || '',
+                'fa'
+            )
+        );
+    }
+
+    for (const customer of customers) {
+        const balance =
+            customerBalances[customer.id] || 0;
+
+        const card =
+            document.createElement('div');
+
+        card.className = 'list-card';
+
+        const isVisible =
+            isGlobalVisible ||
+            visibleCustomerIds.has(customer.id);
+
+        const balanceText =
+            isVisible
+                ? formatMoney(balance)
+                : '••••••';
+
+        card.innerHTML = `
+            <div
+                class="list-card-main"
+                onclick="openCustomer(${customer.id})"
+            >
+                <div class="list-card-icon">👤</div>
+
+                <div class="list-card-info">
+                    <div class="list-card-title">
+                        ${escapeHtml(customer.name)}
+                    </div>
+
+                    <div class="list-card-subtitle">
+                        ${customer.phone
+                            ? escapeHtml(customer.phone)
+                            : 'بدون شماره تماس'}
+                    </div>
+
+                    <div class="balance-preview">
+                        مانده:
+                        <strong>${balanceText}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="list-card-actions">
+                <button
+                    class="icon-btn danger"
+                    onclick="event.stopPropagation(); deleteCustomer(${customer.id})"
+                >
+                    🗑️
+                </button>
+            </div>
+        `;
+
+        container.appendChild(card);
+    }
+}
+
+
+function openAddCustomerModal() {
+    document.getElementById(
+        'inputCustomerName'
+    ).value = '';
+
+    document.getElementById(
+        'inputCustomerPhone'
+    ).value = '';
+
+    document.getElementById(
+        'inputCustomerAddress'
+    ).value = '';
+
+    document.getElementById(
+        'modalCustomer'
+    ).style.display = 'flex';
+}
+
+
+async function saveCustomer() {
+    const name =
+        document.getElementById(
+            'inputCustomerName'
+        ).value.trim();
+
+    const phone =
+        document.getElementById(
+            'inputCustomerPhone'
+        ).value.trim();
+
+    const address =
+        document.getElementById(
+            'inputCustomerAddress'
+        ).value.trim();
+
+    if (!name) {
+        alert('لطفاً نام مشتری را وارد کنید');
+        return;
+    }
+
+    await addRecord('customers', {
+        neighborhoodId: selectedNeighborhoodId,
+        name: name,
+        phone: phone,
+        address: address,
+        createdAt: Date.now()
+    });
+
+    closeModal('modalCustomer');
+
+    renderCustomers();
+}
+
+
+async function deleteCustomer(id) {
+    if (
+        !confirm(
+            'آیا از حذف این مشتری مطمئن هستید؟ تمام اطلاعات او نیز حذف خواهد شد.'
+        )
+    ) {
+        return;
+    }
+
+    const products =
+        await getAll('products');
+
+    const customerProductsToDelete =
+        products.filter(
+            p => p.customerId === id
+        );
+
+    for (const product of customerProductsToDelete) {
+        await deleteRecord(
+            'products',
+            product.id
+        );
+    }
+
+    const transactions =
+        await getAll('transactions');
+
+    const customerTransactions =
+        transactions.filter(
+            t => t.customerId === id
+        );
+
+    for (const transaction of customerTransactions) {
+        await deleteRecord(
+            'transactions',
+            transaction.id
+        );
+    }
+
+    await deleteRecord(
+        'customers',
+        id
+    );
+
+    visibleCustomerIds.delete(id);
+
+    renderCustomers();
+}
+
+
+async function openCustomer(id) {
+    selectedCustomerId = id;
+
+    currentCustomerObj =
+        await getRecord('customers', id);
+
+    if (!currentCustomerObj) return;
+
+    currentView = 'ledger';
+
+    document.getElementById(
+        'viewNeighborhoods'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'viewCustomers'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'viewLedger'
+    ).style.display = 'block';
+
+    const title =
+        document.getElementById('customerTitle');
+
+    if (title) {
+        title.innerText =
+            currentCustomerObj.name;
     }
 
     const phone =
-        normalizePhone(customer.phone)
-        .replace(/^0/,"98");
+        document.getElementById('customerPhone');
 
-    const balance =
-        getCustomerBalance(id);
+    if (phone) {
+        phone.innerText =
+            currentCustomerObj.phone || '';
+    }
 
-    const text =
-        `سلام ${customer.name}، مانده حساب شما ${money(Math.abs(balance))} تومان است.`;
+    const address =
+        document.getElementById('customerAddress');
 
-    window.open(
-        "https://wa.me/" +
-        phone +
-        "?text=" +
-        encodeURIComponent(text),
-        "_blank"
+    if (address) {
+        address.innerText =
+            currentCustomerObj.address || '';
+    }
+
+    await renderLedger();
+}
+
+
+// ==================== LEDGER ====================
+
+async function renderLedger() {
+    const transactions =
+        await getAll('transactions');
+
+    const products =
+        await getAll('products');
+
+    const customerTransactions =
+        transactions
+            .filter(
+                t => t.customerId === selectedCustomerId
+            )
+            .sort(
+                (a, b) =>
+                    Number(a.createdAt || 0) -
+                    Number(b.createdAt || 0)
+            );
+
+    customerProducts =
+        products.filter(
+            p => p.customerId === selectedCustomerId
+        );
+
+    currentCustomerBalance = 0;
+
+    customerTransactions.forEach(
+        transaction => {
+            currentCustomerBalance +=
+                Number(transaction.amount || 0);
+        }
     );
 
-}
+    const balanceElement =
+        document.getElementById(
+            'customerBalance'
+        );
 
-
-function openContactModal(){
-
-    document.getElementById("contactSearch").value = "";
-
-    loadPhoneContacts();
-
-    openModal("contactModal");
-
-}
-
-
-async function loadPhoneContacts(){
-
-    /*
-      نسخه مرورگر امکان دسترسی مستقیم به مخاطبین گوشی را ندارد.
-      بعد از تبدیل به Android، این بخش به Capacitor Contacts متصل می‌شود.
-    */
-
-    phoneContacts = [];
-
-    renderContacts();
-
-}
-
-
-function renderContacts(){
+    if (balanceElement) {
+        balanceElement.innerText =
+            formatMoney(currentCustomerBalance);
+    }
 
     const container =
-        document.getElementById("contactsList");
+        document.getElementById(
+            'transactionList'
+        );
 
-    const search =
-        document.getElementById("contactSearch")
-        .value
-        .trim()
-        .toLowerCase();
+    if (!container) return;
 
-    let contacts =
-        phoneContacts;
+    container.innerHTML = '';
 
-    if(search){
-
-        contacts =
-            contacts.filter(c => {
-
-                const name =
-                    String(c.name || "").toLowerCase();
-
-                const phone =
-                    String(c.phone || "");
-
-                return (
-                    name.includes(search) ||
-                    phone.includes(search)
-                );
-
-            });
-
-    }
-
-    if(contacts.length === 0){
-
+    if (!customerTransactions.length) {
         container.innerHTML = `
-
-            <div class="empty">
-
-                📱
-
-                <div style="margin-top:10px">
-                    مخاطبین گوشی در نسخه Android
-                    از این قسمت نمایش داده می‌شوند.
-                </div>
-
+            <div class="empty-state">
+                <div class="empty-icon">📒</div>
+                <div>هنوز تراکنشی ثبت نشده است</div>
             </div>
-
         `;
-
         return;
-
     }
 
-    container.innerHTML = "";
+    let runningBalance = 0;
 
-    contacts.forEach((contact,index) => {
+    customerTransactions.forEach(
+        transaction => {
+            runningBalance +=
+                Number(transaction.amount || 0);
 
-        const div =
-            document.createElement("div");
+            const row =
+                document.createElement('div');
 
-        div.className = "contact-item";
+            row.className =
+                'transaction-row';
 
-        div.innerHTML = `
+            let typeText = 'تراکنش';
+            let icon = '📝';
+            let amountClass = '';
 
-            <div>
+            if (transaction.type === 'PURCHASE') {
+                typeText = 'خرید';
+                icon = '🛒';
+                amountClass = 'amount-purchase';
+            }
 
-                <div class="contact-name">
-                    ${escapeHtml(contact.name)}
+            if (transaction.type === 'PAYMENT') {
+                typeText = 'پرداخت';
+                icon = '💵';
+                amountClass = 'amount-payment';
+            }
+
+            if (transaction.type === 'RETURN') {
+                typeText = 'مرجوعی';
+                icon = '↩️';
+                amountClass = 'amount-return';
+            }
+
+            const amount =
+                Number(transaction.amount || 0);
+
+            row.innerHTML = `
+                <div class="transaction-icon">
+                    ${icon}
                 </div>
 
-                <div class="contact-number">
-                    ${escapeHtml(contact.phone)}
+                <div class="transaction-info">
+                    <div class="transaction-title">
+                        ${escapeHtml(
+                            transaction.description ||
+                            typeText
+                        )}
+                    </div>
+
+                    <div class="transaction-date">
+                        ${escapeHtml(
+                            transaction.date ||
+                            getTodayJalali()
+                        )}
+                    </div>
                 </div>
 
-            </div>
+                <div class="transaction-amount">
+                    <div class="${amountClass}">
+                        ${amount > 0 ? '+' : ''}
+                        ${formatMoney(amount)}
+                    </div>
 
-            <button
-                class="btn btn-primary"
-                onclick="selectContact(${index})"
-            >
-                انتخاب
-            </button>
+                    <div class="transaction-balance">
+                        مانده:
+                        ${formatMoney(runningBalance)}
+                    </div>
+                </div>
+            `;
 
-        `;
+            container.appendChild(row);
+        }
+    );
+}
 
-        container.appendChild(div);
 
+// ==================== PURCHASE ====================
+
+function openPurchaseModal() {
+    const name =
+        document.getElementById(
+            'inputProductName'
+        );
+
+    const quantity =
+        document.getElementById(
+            'inputProductQuantity'
+        );
+
+    const price =
+        document.getElementById(
+            'inputProductPrice'
+        );
+
+    if (name) name.value = '';
+    if (quantity) quantity.value = '1';
+    if (price) price.value = '';
+
+    document.getElementById(
+        'modalPurchase'
+    ).style.display = 'flex';
+}
+
+
+async function savePurchase() {
+    const productName =
+        document.getElementById(
+            'inputProductName'
+        ).value.trim();
+
+    const quantity =
+        Number(
+            document.getElementById(
+                'inputProductQuantity'
+            ).value
+        );
+
+    const price =
+        Number(
+            document.getElementById(
+                'inputProductPrice'
+            ).value
+        );
+
+    if (!productName) {
+        alert('لطفاً نام کالا را وارد کنید');
+        return;
+    }
+
+    if (!quantity || quantity <= 0) {
+        alert('تعداد کالا صحیح نیست');
+        return;
+    }
+
+    if (!price || price <= 0) {
+        alert('مبلغ کالا صحیح نیست');
+        return;
+    }
+
+    const total =
+        quantity * price;
+
+    const productId =
+        await addRecord('products', {
+            customerId: selectedCustomerId,
+            name: productName,
+            quantity: quantity,
+            unitPrice: price,
+            totalPrice: total,
+            returnedQuantity: 0,
+            date: getTodayJalali(),
+            createdAt: Date.now()
+        });
+
+    await addRecord('transactions', {
+        customerId: selectedCustomerId,
+        productId: productId,
+        type: 'PURCHASE',
+        amount: total,
+        description:
+            `${productName} × ${quantity}`,
+        date: getTodayJalali(),
+        createdAt: Date.now()
     });
 
+    closeModal('modalPurchase');
+
+    renderLedger();
 }
 
 
-function selectContact(index){
+// ==================== PAYMENT ====================
 
-    const contact =
-        phoneContacts[index];
+function openPaymentModal() {
+    const input =
+        document.getElementById(
+            'inputPaymentAmount'
+        );
 
-    if(!contact) return;
+    const description =
+        document.getElementById(
+            'inputPaymentDescription'
+        );
 
-    document.getElementById("customerName")
-        .value = contact.name || "";
+    if (input) input.value = '';
+    if (description) description.value = '';
 
-    document.getElementById("customerPhone")
-        .value = contact.phone || "";
-
-    closeModal("contactModal");
-
-    openCustomerModalAfterContact();
-
+    document.getElementById(
+        'modalPayment'
+    ).style.display = 'flex';
 }
 
 
-function openCustomerModalAfterContact(){
+async function savePayment() {
+    const amount =
+        Number(
+            document.getElementById(
+                'inputPaymentAmount'
+            ).value
+        );
 
-    updateNeighborhoodSelect();
+    const description =
+        document.getElementById(
+            'inputPaymentDescription'
+        ).value.trim();
 
-    openModal("customerModal");
-
-}
-
-
-function openSettings(){
-
-    document.getElementById("ownerName")
-        .value = settings.ownerName || "";
-
-    openModal("settingsModal");
-
-}
-
-
-function saveSettings(){
-
-    settings.ownerName =
-        document.getElementById("ownerName")
-        .value.trim();
-
-    saveSettingsData();
-
-    closeModal("settingsModal");
-
-    alert("تنظیمات ذخیره شد.");
-
-}
-
-
-function changePassword(){
-
-    const current =
-        prompt("رمز فعلی را وارد کنید:");
-
-    if(settings.password && current !== settings.password){
-
-        alert("رمز فعلی اشتباه است.");
-
+    if (!amount || amount <= 0) {
+        alert('لطفاً مبلغ پرداخت را وارد کنید');
         return;
-
     }
 
-    const newPassword =
-        prompt("رمز جدید را وارد کنید:");
+    await addRecord('transactions', {
+        customerId: selectedCustomerId,
+        type: 'PAYMENT',
+        amount: -amount,
+        description:
+            description || 'پرداخت قسط',
+        date: getTodayJalali(),
+        createdAt: Date.now()
+    });
 
-    if(!newPassword){
+    closeModal('modalPayment');
 
-        alert("رمز تغییر نکرد.");
+    renderLedger();
+}
 
+
+// ==================== RETURN ====================
+
+async function openReturnModal() {
+    const products =
+        await getAll('products');
+
+    const available =
+        products.filter(
+            p =>
+                p.customerId === selectedCustomerId &&
+                Number(p.returnedQuantity || 0) <
+                    Number(p.quantity || 0)
+        );
+
+    const select =
+        document.getElementById(
+            'returnProductSelect'
+        );
+
+    if (!select) return;
+
+    select.innerHTML = '';
+
+    if (!available.length) {
+        alert('کالای قابل مرجوعی وجود ندارد');
         return;
-
     }
 
-    settings.password = newPassword;
+    available.forEach(product => {
+        const option =
+            document.createElement('option');
 
-    saveSettingsData();
+        option.value = product.id;
 
-    alert("رمز جدید ذخیره شد.");
+        const remaining =
+            Number(product.quantity) -
+            Number(product.returnedQuantity || 0);
 
+        option.textContent =
+            `${product.name} - باقی‌مانده: ${remaining} عدد`;
+
+        select.appendChild(option);
+    });
+
+    const quantityInput =
+        document.getElementById(
+            'inputReturnQuantity'
+        );
+
+    if (quantityInput) {
+        quantityInput.value = '1';
+    }
+
+    document.getElementById(
+        'modalReturn'
+    ).style.display = 'flex';
 }
 
 
-function lockApp(){
+async function saveReturn() {
+    const productId =
+        Number(
+            document.getElementById(
+                'returnProductSelect'
+            ).value
+        );
 
-    settings.locked = true;
+    const quantity =
+        Number(
+            document.getElementById(
+                'inputReturnQuantity'
+            ).value
+        );
 
-    saveSettingsData();
-
-    document.getElementById("lockScreen")
-        .classList.add("show");
-
-}
-
-
-function login(){
-
-    const password =
-        document.getElementById("loginPassword").value;
-
-    const error =
-        document.getElementById("loginError");
-
-    if(!settings.password){
-
-        settings.locked = false;
-
-        saveSettingsData();
-
-        document.getElementById("lockScreen")
-            .classList.remove("show");
-
+    if (!productId) {
+        alert('کالا را انتخاب کنید');
         return;
-
     }
 
-    if(password === settings.password){
-
-        settings.locked = false;
-
-        saveSettingsData();
-
-        document.getElementById("loginPassword")
-            .value = "";
-
-        error.textContent = "";
-
-        document.getElementById("lockScreen")
-            .classList.remove("show");
-
-    }else{
-
-        error.textContent =
-            "رمز عبور اشتباه است.";
-
+    if (!quantity || quantity <= 0) {
+        alert('تعداد مرجوعی صحیح نیست');
+        return;
     }
 
-}
+    const product =
+        await getRecord(
+            'products',
+            productId
+        );
 
-
-function clearAllData(){
-
-    if(!confirm(
-        "همه مشتری‌ها، محله‌ها و تراکنش‌ها حذف شوند؟"
-    )) return;
-
-    data = {
-
-        customers:[],
-
-        neighborhoods:[],
-
-        transactions:[]
-
-    };
-
-    saveData();
-
-    renderAll();
-
-    alert("همه اطلاعات حذف شد.");
-
-}
-
-
-function escapeHtml(value){
-
-    return String(value ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
-
-}
-
-
-function renderAll(){
-
-    renderStats();
-
-    renderCustomers();
-
-    renderNeighborhoods();
-
-}
-
-
-function initialize(){
-
-    loadData();
-
-    loadSettings();
-
-    renderAll();
-
-    if(settings.locked){
-
-        document.getElementById("lockScreen")
-            .classList.add("show");
-
+    if (!product) {
+        alert('کالا پیدا نشد');
+        return;
     }
 
+    const remaining =
+        Number(product.quantity) -
+        Number(product.returnedQuantity || 0);
+
+    if (quantity > remaining) {
+        alert(
+            `حداکثر تعداد قابل مرجوعی ${remaining} عدد است`
+        );
+        return;
+    }
+
+    const returnAmount =
+        quantity *
+        Number(product.unitPrice || 0);
+
+    product.returnedQuantity =
+        Number(product.returnedQuantity || 0) +
+        quantity;
+
+    await updateRecord(
+        'products',
+        product
+    );
+
+    await addRecord('transactions', {
+        customerId: selectedCustomerId,
+        productId: product.id,
+        type: 'RETURN',
+        amount: -returnAmount,
+        description:
+            `مرجوعی ${product.name} × ${quantity}`,
+        date: getTodayJalali(),
+        createdAt: Date.now()
+    });
+
+    closeModal('modalReturn');
+
+    renderLedger();
 }
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    initialize
-);
+// ==================== NATIVE PHONE CONTACTS ====================
+
+function getContactsPlugin() {
+    try {
+        if (
+            window.Capacitor &&
+            window.Capacitor.Plugins &&
+            window.Capacitor.Plugins.Contacts
+        ) {
+            return window.Capacitor.Plugins.Contacts;
+        }
+    } catch (error) {
+        console.error(
+            'Contacts plugin error:',
+            error
+        );
+    }
+
+    return null;
+}
 
 
-document.addEventListener(
-    "click",
-    function(e){
+async function openNativeContacts() {
+    const Contacts =
+        getContactsPlugin();
 
-        if(e.target.classList.contains("modal")){
+    if (!Contacts) {
+        alert(
+            'افزونه مخاطبین روی برنامه نصب نشده است.\n' +
+            'لطفاً نسخه جدید APK را بعد از Build نصب کنید.'
+        );
+        return;
+    }
 
-            e.target.classList.remove("show");
+    try {
+        if (
+            Contacts.getPermissions &&
+            Contacts.requestPermissions
+        ) {
+            try {
+                const permissions =
+                    await Contacts.getPermissions();
 
+                if (
+                    permissions &&
+                    permissions.contacts !== 'granted'
+                ) {
+                    await Contacts.requestPermissions();
+                }
+            } catch (permissionError) {
+                console.warn(
+                    'Permission check:',
+                    permissionError
+                );
+            }
         }
 
+        const result =
+            await Contacts.getContacts({
+                projection: {
+                    name: true,
+                    phones: true
+                }
+            });
+
+        const contacts =
+            result?.contacts || [];
+
+        nativeContactsCache =
+            contacts
+                .map(normalizeNativeContact)
+                .filter(
+                    contact =>
+                        contact.name ||
+                        contact.phone
+                )
+                .sort(
+                    (a, b) =>
+                        (a.name || '').localeCompare(
+                            b.name || '',
+                            'fa'
+                        )
+                );
+
+        nativeContactsFiltered =
+            [...nativeContactsCache];
+
+        document.getElementById(
+            'modalNativeContacts'
+        ).style.display = 'flex';
+
+        const searchInput =
+            document.getElementById(
+                'nativeContactsSearch'
+            );
+
+        if (searchInput) {
+            searchInput.value = '';
+            setTimeout(
+                () => searchInput.focus(),
+                100
+            );
+        }
+
+        renderNativeContacts(
+            nativeContactsFiltered
+        );
+
+    } catch (error) {
+        console.error(
+            'خطا در دریافت مخاطبین:',
+            error
+        );
+
+        alert(
+            'دسترسی به مخاطبین داده نشد یا دریافت مخاطبین با خطا مواجه شد.\n\n' +
+            'در تنظیمات گوشی، دسترسی Contacts را برای برنامه فعال کنید.'
+        );
     }
-);
+}
+
+
+function normalizeNativeContact(contact) {
+    const name =
+        contact?.name?.display ||
+        contact?.displayName ||
+        contact?.name?.given ||
+        contact?.name?.family ||
+        '';
+
+    let phone = '';
+
+    if (
+        Array.isArray(contact?.phones) &&
+        contact.phones.length
+    ) {
+        phone =
+            contact.phones[0]?.number || '';
+    }
+
+    if (
+        !phone &&
+        Array.isArray(contact?.phoneNumbers) &&
+        contact.phoneNumbers.length
+    ) {
+        phone =
+            contact.phoneNumbers[0]?.number || '';
+    }
+
+    return {
+        name: String(name || '').trim(),
+        phone: String(phone || '').trim()
+    };
+}
+
+
+function filterNativeContacts() {
+    const searchInput =
+        document.getElementById(
+            'nativeContactsSearch'
+        );
+
+    const query =
+        (searchInput?.value || '')
+            .trim()
+            .toLowerCase();
+
+    if (!query) {
+        nativeContactsFiltered =
+            [...nativeContactsCache];
+
+        renderNativeContacts(
+            nativeContactsFiltered
+        );
+
+        return;
+    }
+
+    nativeContactsFiltered =
+        nativeContactsCache.filter(
+            contact => {
+                const name =
+                    (contact.name || '')
+                        .toLowerCase();
+
+                const phone =
+                    (contact.phone || '')
+                        .toLowerCase();
+
+                return (
+                    name.includes(query) ||
+                    phone.includes(query)
+                );
+            }
+        );
+
+    renderNativeContacts(
+        nativeContactsFiltered
+    );
+}
+
+
+function renderNativeContacts(contacts) {
+    const container =
+        document.getElementById(
+            'nativeContactsList'
+        );
+
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (!contacts.length) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📱</div>
+                <div>مخاطبی پیدا نشد</div>
+            </div>
+        `;
+
+        return;
+    }
+
+    contacts.forEach(
+        (contact, index) => {
+            const row =
+                document.createElement('div');
+
+            row.className =
+                'native-contact-row';
+
+            row.onclick =
+                () => selectNativeContact(index);
+
+            const initial =
+                contact.name
+                    ? contact.name.charAt(0)
+                    : '👤';
+
+            row.innerHTML = `
+                <div class="native-contact-avatar">
+                    ${escapeHtml(initial)}
+                </div>
+
+                <div class="native-contact-info">
+                    <div class="native-contact-name">
+                        ${escapeHtml(
+                            contact.name ||
+                            'بدون نام'
+                        )}
+                    </div>
+
+                    <div class="native-contact-phone">
+                        ${escapeHtml(
+                            contact.phone ||
+                            'بدون شماره'
+                        )}
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(row);
+        }
+    );
+}
+
+
+function selectNativeContact(index) {
+    const contact =
+        nativeContactsFiltered[index];
+
+    if (!contact) return;
+
+    const nameInput =
+        document.getElementById(
+            'inputCustomerName'
+        );
+
+    const phoneInput =
+        document.getElementById(
+            'inputCustomerPhone'
+        );
+
+    if (nameInput && contact.name) {
+        nameInput.value =
+            contact.name;
+    }
+
+    if (phoneInput && contact.phone) {
+        phoneInput.value =
+            contact.phone;
+    }
+
+    closeModal(
+        'modalNativeContacts'
+    );
+}
+
+
+// ==================== NAVIGATION ====================
+
+function showNeighborhoods() {
+    currentView = 'neighborhoods';
+    selectedNeighborhoodId = null;
+    selectedCustomerId = null;
+
+    document.getElementById(
+        'viewNeighborhoods'
+    ).style.display = 'block';
+
+    document.getElementById(
+        'viewCustomers'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'viewLedger'
+    ).style.display = 'none';
+
+    renderNeighborhoods();
+}
+
+
+function showCustomers() {
+    if (!selectedNeighborhoodId) {
+        showNeighborhoods();
+        return;
+    }
+
+    currentView = 'customers';
+    selectedCustomerId = null;
+
+    document.getElementById(
+        'viewNeighborhoods'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'viewCustomers'
+    ).style.display = 'block';
+
+    document.getElementById(
+        'viewLedger'
+    ).style.display = 'none';
+
+    renderCustomers();
+}
+
+
+function showLedger() {
+    if (!selectedCustomerId) {
+        showCustomers();
+        return;
+    }
+
+    currentView = 'ledger';
+
+    document.getElementById(
+        'viewNeighborhoods'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'viewCustomers'
+    ).style.display = 'none';
+
+    document.getElementById(
+        'viewLedger'
+    ).style.display = 'block';
+
+    renderLedger();
+}
+
+
+// ==================== VISIBILITY ====================
+
+function toggleGlobalVisibility() {
+    isGlobalVisible =
+        !isGlobalVisible;
+
+    renderCurrentView();
+}
+
+
+function toggleCustomerVisibility(id) {
+    if (visibleCustomerIds.has(id)) {
+        visibleCustomerIds.delete(id);
+    } else {
+        visibleCustomerIds.add(id);
+    }
+
+    renderCustomers();
+}
+
+
+function renderCurrentView() {
+    if (currentView === 'neighborhoods') {
+        renderNeighborhoods();
+    }
+
+    if (currentView === 'customers') {
+        renderCustomers();
+    }
+
+    if (currentView === 'ledger') {
+        renderLedger();
+    }
+}
+
+
+// ==================== SORT ====================
+
+function toggleDebtorSort() {
+    sortByDebtors =
+        !sortByDebtors;
+
+    renderCustomers();
+}
+
+
+// ==================== HELPERS ====================
+
+function formatMoney(value) {
+    const number =
+        Number(value || 0);
+
+    return number.toLocaleString('fa-IR') +
+        ' تومان';
+}
+
+
+function getTodayJalali() {
+    return "۱۴۰۵/۰۷/۰۱";
+}
+
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+
+// ==================== MODALS ====================
+
+function closeModal(id) {
+    const modal =
+        document.getElementById(id);
+
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+
+function openSettings() {
+    loadSettings();
+
+    document.getElementById(
+        'modalSettings'
+    ).style.display = 'flex';
+}
+
+
+// ==================== BACK / HEADER ====================
+
+function goBack() {
+    if (currentView === 'ledger') {
+        showCustomers();
+        return;
+    }
+
+    if (currentView === 'customers') {
+        showNeighborhoods();
+        return;
+    }
+
+    showNeighborhoods();
+}
+
+
+// ==================== FIREBASE ====================
 
 </script>
 
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyC2lrybdv1Gg0U3QlrYjpKbvA3kZyyQ4Yo",
+    authDomain: "ayhanghesst.firebaseapp.com",
+    projectId: "ayhanghesst",
+    storageBucket: "ayhanghesst.firebasestorage.app",
+    messagingSenderId: "232166971242",
+    appId: "1:232166971242:web:3d3dca072cea51cc763713",
+    measurementId: "G-059QW7JE1T"
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+const firestoreDb =
+    firebase.firestore();
+
+
+async function syncToFirebase() {
+    try {
+        const neighborhoods =
+            await getAll('neighborhoods');
+
+        const customers =
+            await getAll('customers');
+
+        const products =
+            await getAll('products');
+
+        const transactions =
+            await getAll('transactions');
+
+        const userId =
+            localStorage.getItem(
+                'ayhan_user'
+            ) || 'default_user';
+
+        const userDocRef =
+            firestoreDb
+                .collection('users_data')
+                .doc(userId);
+
+        await userDocRef.set(
+            {
+                neighborhoods,
+                customers,
+                products,
+                transactions,
+                lastSyncedAt:
+                    new Date().toISOString()
+            },
+            {
+                merge: true
+            }
+        );
+
+        alert(
+            'اطلاعات با موفقیت روی فایربیس همگام‌سازی شد! ☁️🔥'
+        );
+
+    } catch (error) {
+        console.error(
+            "خطا در همگام‌سازی فایربیس:",
+            error
+        );
+
+        alert(
+            'خطا در همگام‌سازی با فایربیس: ' +
+            error.message
+        );
+    }
+}
+</script>
+
 </body>
-</html>
+</html>    
