@@ -1668,96 +1668,218 @@ function initDB() {
 }
 
 
-function addRecord(storeName, data) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([storeName], 'readwrite');
-        const store = transaction.objectStore(storeName);
+function checkLicense() {
+    const savedKey = localStorage.getItem('ayhan_license');
 
-        const request = store.add(data);
+    const licenseFields =
+        document.getElementById('authLicenseFields');
 
-        request.onsuccess = function() {
-            resolve(request.result);
-        };
+    const setupFields =
+        document.getElementById('authSetupFields');
 
-        request.onerror = function() {
-            reject(request.error);
-        };
-    });
+    const loginFields =
+        document.getElementById('authLoginFields');
+
+    if (!savedKey || !VALID_LICENSE_KEYS.includes(savedKey)) {
+        if (licenseFields) {
+            licenseFields.classList.remove('hidden');
+        }
+
+        if (setupFields) {
+            setupFields.classList.add('hidden');
+        }
+
+        if (loginFields) {
+            loginFields.classList.add('hidden');
+        }
+
+        return;
+    }
+
+    const savedUsername =
+        localStorage.getItem('ayhan_username');
+
+    const savedPassword =
+        localStorage.getItem('ayhan_password');
+
+    if (!savedUsername || !savedPassword) {
+        if (licenseFields) {
+            licenseFields.classList.add('hidden');
+        }
+
+        if (setupFields) {
+            setupFields.classList.remove('hidden');
+        }
+
+        if (loginFields) {
+            loginFields.classList.add('hidden');
+        }
+
+        return;
+    }
+
+    if (licenseFields) {
+        licenseFields.classList.add('hidden');
+    }
+
+    if (setupFields) {
+        setupFields.classList.add('hidden');
+    }
+
+    if (loginFields) {
+        loginFields.classList.remove('hidden');
+    }
 }
 
 
-function updateRecord(storeName, data) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([storeName], 'readwrite');
-        const store = transaction.objectStore(storeName);
+function activateLicense() {
+    const input =
+        document.getElementById('licenseKeyInput');
 
-        const request = store.put(data);
+    if (!input) return;
 
-        request.onsuccess = function() {
-            resolve(request.result);
-        };
+    const key =
+        input.value.trim();
 
-        request.onerror = function() {
-            reject(request.error);
-        };
-    });
+    if (!VALID_LICENSE_KEYS.includes(key)) {
+        alert('کد فعال‌سازی صحیح نیست ❌');
+        return;
+    }
+
+    localStorage.setItem(
+        'ayhan_license',
+        key
+    );
+
+    checkLicense();
+
+    alert(
+        'لایسنس با موفقیت فعال شد ✅\nحالا نام کاربری و رمز عبور خود را تعیین کنید.'
+    );
 }
 
 
-function deleteRecord(storeName, id) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([storeName], 'readwrite');
-        const store = transaction.objectStore(storeName);
+function setupCredentials() {
+    const usernameInput =
+        document.getElementById('setupUsername');
 
-        const request = store.delete(id);
+    const passwordInput =
+        document.getElementById('setupPassword');
 
-        request.onsuccess = function() {
-            resolve();
-        };
+    const username =
+        usernameInput?.value.trim() || '';
 
-        request.onerror = function() {
-            reject(request.error);
-        };
-    });
+    const password =
+        passwordInput?.value || '';
+
+    if (!username) {
+        alert('لطفاً نام کاربری را وارد کنید');
+        return;
+    }
+
+    if (!password) {
+        alert('لطفاً رمز عبور را وارد کنید');
+        return;
+    }
+
+    if (password.length < 4) {
+        alert('رمز عبور باید حداقل ۴ کاراکتر باشد');
+        return;
+    }
+
+    localStorage.setItem(
+        'ayhan_username',
+        username
+    );
+
+    localStorage.setItem(
+        'ayhan_password',
+        password
+    );
+
+    document.getElementById(
+        'lockScreen'
+    ).style.display = 'none';
+
+    if (usernameInput) {
+        usernameInput.value = '';
+    }
+
+    if (passwordInput) {
+        passwordInput.value = '';
+    }
+
+    resetInactivityTimer();
+
+    alert('نام کاربری و رمز عبور با موفقیت ثبت شد ✅');
 }
 
 
-function getAll(storeName) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([storeName], 'readonly');
-        const store = transaction.objectStore(storeName);
+function loginWithPassword() {
+    const usernameInput =
+        document.getElementById('loginUsername');
 
-        const request = store.getAll();
+    const passwordInput =
+        document.getElementById('loginPassword');
 
-        request.onsuccess = function() {
-            resolve(request.result || []);
-        };
+    const username =
+        usernameInput?.value.trim() || '';
 
-        request.onerror = function() {
-            reject(request.error);
-        };
-    });
+    const password =
+        passwordInput?.value || '';
+
+    const savedUsername =
+        localStorage.getItem('ayhan_username');
+
+    const savedPassword =
+        localStorage.getItem('ayhan_password');
+
+    if (!savedUsername || !savedPassword) {
+        checkLicense();
+
+        alert(
+            'هنوز نام کاربری و رمز عبور تعریف نشده است.'
+        );
+
+        return;
+    }
+
+    if (
+        username === savedUsername &&
+        password === savedPassword
+    ) {
+        document.getElementById(
+            'lockScreen'
+        ).style.display = 'none';
+
+        if (usernameInput) {
+            usernameInput.value = '';
+        }
+
+        if (passwordInput) {
+            passwordInput.value = '';
+        }
+
+        resetInactivityTimer();
+
+    } else {
+        alert(
+            'نام کاربری یا رمز عبور اشتباه است ❌'
+        );
+    }
 }
 
 
-function getRecord(storeName, id) {
-    return new Promise((resolve, reject) => {
-        const transaction = db.transaction([storeName], 'readonly');
-        const store = transaction.objectStore(storeName);
+function lockApp() {
+    const lockScreen =
+        document.getElementById('lockScreen');
 
-        const request = store.get(id);
+    if (lockScreen) {
+        lockScreen.style.display = 'flex';
+    }
 
-        request.onsuccess = function() {
-            resolve(request.result);
-        };
-
-        request.onerror = function() {
-            reject(request.error);
-        };
-    });
+    checkLicense();
 }
-
-
 // ==================== START APP ====================
 
 window.onload = async function() {
