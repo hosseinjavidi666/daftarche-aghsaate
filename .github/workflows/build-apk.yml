@@ -23,16 +23,17 @@ jobs:
       - name: Set up Java JDK
         uses: actions/setup-java@v4
         with:
-          distribution: zulu
-          java-version: 17
+          distribution: 'zulu'
+          java-version: '17'
 
       - name: Install Dependencies
         run: npm install
 
       - name: Add Android Platform
-        run: |
-          npx cap add android
-          npx cap copy android
+        run: npx cap add android
+
+      - name: Sync Capacitor
+        run: npx cap sync android
 
       - name: Build APK
         run: |
