@@ -4,14 +4,14 @@
   "description": "دفترچه اقساط",
   "main": "index.js",
   "scripts": {
-    "build": "echo \"Building...\""
+    "build": "echo build"
   },
   "dependencies": {
-    "@capacitor/core": "^5.7.8",
-    "@capacitor/android": "^5.7.8",
+    "@capacitor/android": "5.7.8",
+    "@capacitor/core": "5.7.8",
     "@capacitor-community/contacts": "5.1.1"
   },
   "devDependencies": {
-    "@capacitor/cli": "^5.7.8"
+    "@capacitor/cli": "5.7.8"
   }
 }
