@@ -1,1 +1,8 @@
-
+{
+  "appId": "com.ayhan.ghesst",
+  "appName": "دفترچه اقساط",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
